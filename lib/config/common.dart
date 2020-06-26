@@ -85,14 +85,14 @@ Widget searchTitle(BuildContext context,
     TextEditingController editingController, String text, Function callBack) {
   return Container(
       padding:
-          EdgeInsets.only(left: 40.w, right: 40.w, top: 20.w, bottom: 40.w),
+          EdgeInsets.only(left: 40.w, right: 40.w, top: 30.w, bottom: 30.w),
       child: Row(
         children: <Widget>[
           Expanded(
             flex: 1,
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: 60.h,
+                maxHeight: 70.h,
               ),
               child: TextField(
                   autofocus: false,
@@ -134,10 +134,10 @@ Widget searchTitle(BuildContext context,
               padding: EdgeInsets.fromLTRB(20.w, 10.h, 10.w, 10.h),
               child: Row(
                 children: <Widget>[
-                  Image.asset("images/search.png", width: 34.w),
+                  Image.asset("images/search.png", width: 38.w),
                   Text(
                     '搜索',
-                    style: myTextStyle(28, 0xff09abf7, false),
+                    style: myTextStyle(32, 0xff09abf7, false),
                   )
                 ],
               ),

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:toolbag/config/common.dart';
 
 class TSSCProvide with ChangeNotifier {
   List<Map> dataList = [];
@@ -10,7 +11,7 @@ class TSSCProvide with ChangeNotifier {
   int page = 1;
 
   //搜索按钮
-  setVal(String newPoetId,String newBiography) {
+  setVal(String newPoetId, String newBiography) {
     poetId = newPoetId;
     biography = newBiography;
     notifyListeners();
@@ -21,7 +22,7 @@ class TSSCProvide with ChangeNotifier {
     notifyListeners();
   }
 
-  addPage(){
+  addPage() {
     page++;
     notifyListeners();
   }
@@ -44,9 +45,14 @@ class TSSCProvide with ChangeNotifier {
         "poetId": poetId,
         "page": page.toString()
       });
-
-      dataList.addAll((newResponse.data["showapi_res_body"]["poemInfo"] as List).cast());
-      notifyListeners();
+      print(newResponse.data);
+      if (newResponse.data["showapi_res_body"]["poemInfo"].length > 0) {
+        dataList.addAll(
+            (newResponse.data["showapi_res_body"]["poemInfo"] as List).cast());
+        notifyListeners();
+      } else {
+        shortToast("没数据了......");
+      }
     } catch (e) {
       return print("eeeeeeeeeee22=$e");
     }

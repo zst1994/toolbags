@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toolbag/pages/webview/web_view_pages.dart';
 import '../typepage/type_page.dart';
 import '../splash_screen.dart';
 
@@ -7,6 +8,7 @@ final routes = {
   //启动动画
   '/': (context) => SplashScreen(),
   '/buttonPage': (context, {arguments}) => ButtonDemoPage(arguments: arguments),
+  '/webview': (context, {arguments}) => WebViewPage(arguments: arguments),
 };
 
 //固定写法

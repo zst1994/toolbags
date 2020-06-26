@@ -30,6 +30,7 @@ dependencies:
   date_format: ^1.0.8
   fluttertoast: ^4.0.1
   flutter_html: ^0.11.1
+  webview_flutter: ^0.3.22+1
   provide: ^1.0.2
   flutter_boost:
     git:

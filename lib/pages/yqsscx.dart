@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 
 import 'package:flutter/material.dart';
@@ -36,7 +38,10 @@ class YQSSCX extends StatelessWidget {
               style: myTextStyle(38, 0xffffffff, false),
             )),
         body: FutureBuilder(
-            future: _getHttp(context, arguments["url"], {}),
+            future: _getHttp(context, arguments["url"], {
+              "showapi_appid": "166717",
+              "showapi_sign": "5940b7d81a7d4979b120004d17c1ae74"
+            }),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ListView(
@@ -385,11 +390,12 @@ class YQSSCX extends StatelessWidget {
   }
 
   Future _getHttp(BuildContext context, String url, Map formData) async {
-    print(url);
-    print(formData);
     try {
       Response response;
-      response = await Dio().post(url, data: formData);
+      Dio dio = new Dio();
+      dio.options.contentType =
+          ContentType.parse("application/x-www-form-urlencoded").toString();
+      response = await dio.post(url, data: formData);
       _yqBottomContentList =
           response.data["showapi_res_body"]["todayDetailList"];
       _yqBottomContentList.forEach((item) {
@@ -410,8 +416,9 @@ class YQSSCX extends StatelessWidget {
           "color": 0xfff76809,
           "title": "现存确诊",
           "todayNum": todayStatictic["confirmedNum"],
-          "todayAdd":
-              todayStatictic["confirmedIncr"] - todayStatictic["curedIncr"] - todayStatictic["deadIncr"]
+          "todayAdd": todayStatictic["confirmedIncr"] -
+              todayStatictic["curedIncr"] -
+              todayStatictic["deadIncr"]
         },
         {
           "color": 0xfff7ac09,

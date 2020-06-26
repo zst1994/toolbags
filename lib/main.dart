@@ -5,11 +5,16 @@ import 'package:provide/provide.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:toolbag/provide/cyc.dart';
+import 'package:toolbag/provide/history.dart';
 import 'package:toolbag/provide/hmgsd.dart';
 import 'package:toolbag/provide/ipcx.dart';
 import 'package:toolbag/provide/jryj.dart';
+import 'package:toolbag/provide/news.dart';
+import 'package:toolbag/provide/njjzw.dart';
 import 'package:toolbag/provide/sfzcx.dart';
 import 'package:toolbag/provide/tssc.dart';
+import 'package:toolbag/provide/xhdq.dart';
 import 'package:toolbag/provide/yqsscx.dart';
 import 'package:toolbag/splash_screen.dart';
 import 'routes/Routes.dart';
@@ -21,6 +26,11 @@ void main() {
   var hmgsdDataList = HMGSDProvide();
   var ipcxDataList = IPCXProvide();
   var jryjDataList = JRYJProvide();
+  var newsDataList = NEWSProvide();
+  var xhDataList = XHProvide();
+  var njjzwDataList = NJJZWProvide();
+  var cycDataList = CYCProvide();
+  var historyDataList = HistoryProvide();
   
   var providers = Providers();
 
@@ -30,7 +40,12 @@ void main() {
     ..provide(Provider<SFZCXProvide>.value(sfzDataList))
     ..provide(Provider<HMGSDProvide>.value(hmgsdDataList))
     ..provide(Provider<IPCXProvide>.value(ipcxDataList))
-    ..provide(Provider<JRYJProvide>.value(jryjDataList));
+    ..provide(Provider<JRYJProvide>.value(jryjDataList))
+    ..provide(Provider<NEWSProvide>.value(newsDataList))
+    ..provide(Provider<XHProvide>.value(xhDataList))
+    ..provide(Provider<NJJZWProvide>.value(njjzwDataList))
+    ..provide(Provider<CYCProvide>.value(cycDataList))
+    ..provide(Provider<HistoryProvide>.value(historyDataList));
 
   runApp(ProviderNode(child: MyApp(), providers: providers));
 
