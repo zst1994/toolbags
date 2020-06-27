@@ -30,7 +30,7 @@ List<Map> dateType = [
     "id": "3", 
     "src": "images/money_change.png", 
     "text": "汇率换算",
-    "url": "https://route.showapi.com/341-5?showapi_appid=163892&showapi_sign=2bf78728c6344e559f159871f2fb7ead&len=100"
+    "url": "https://route.showapi.com/105-33"
   },
   {
     "id": "4", 
@@ -42,7 +42,7 @@ List<Map> dateType = [
     "id": "5", 
     "src": "images/zgjm.png", 
     "text": "周公解梦",
-    "url": "https://route.showapi.com/25-3?"
+    "url": "https://route.showapi.com/1601-2"
   },
   {
     "id": "6", 

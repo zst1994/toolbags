@@ -72,7 +72,6 @@ class HISTORY extends StatelessWidget {
   }
 
   Widget _hisContent(Map item) {
-    print(item["img"]);
     return Container(
       margin: EdgeInsets.only(left: 40.w, right: 40.w, top: 15.w, bottom: 15.w),
       padding: EdgeInsets.all(20.w),

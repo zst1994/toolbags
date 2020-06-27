@@ -74,6 +74,16 @@ class CYC extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(bottom: 20.w),
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom:
+                          BorderSide(width: 1.w, color: Color(0xffcccccc)))),
+              child: Text(item["typeName"]),
+            ),
+            SizedBox(height: 20.w),
             Text(
               item["title"],
               style: myTextStyle(32, 0xff333333, false),

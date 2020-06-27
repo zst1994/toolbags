@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:toolbag/provide/cyc.dart';
 import 'package:toolbag/provide/history.dart';
+import 'package:toolbag/provide/hlhs.dart';
 import 'package:toolbag/provide/hmgsd.dart';
 import 'package:toolbag/provide/ipcx.dart';
 import 'package:toolbag/provide/jryj.dart';
@@ -16,6 +17,7 @@ import 'package:toolbag/provide/sfzcx.dart';
 import 'package:toolbag/provide/tssc.dart';
 import 'package:toolbag/provide/xhdq.dart';
 import 'package:toolbag/provide/yqsscx.dart';
+import 'package:toolbag/provide/zgjm.dart';
 import 'package:toolbag/splash_screen.dart';
 import 'routes/Routes.dart';
 
@@ -31,6 +33,8 @@ void main() {
   var njjzwDataList = NJJZWProvide();
   var cycDataList = CYCProvide();
   var historyDataList = HistoryProvide();
+  var hlhsDataList = HLHSProvide();
+  var zgjmDataList = ZGJMProvide();
   
   var providers = Providers();
 
@@ -45,7 +49,9 @@ void main() {
     ..provide(Provider<XHProvide>.value(xhDataList))
     ..provide(Provider<NJJZWProvide>.value(njjzwDataList))
     ..provide(Provider<CYCProvide>.value(cycDataList))
-    ..provide(Provider<HistoryProvide>.value(historyDataList));
+    ..provide(Provider<HistoryProvide>.value(historyDataList))
+    ..provide(Provider<HLHSProvide>.value(hlhsDataList))
+    ..provide(Provider<ZGJMProvide>.value(zgjmDataList));
 
   runApp(ProviderNode(child: MyApp(), providers: providers));
 

@@ -222,7 +222,7 @@ class JhPickerTool {
             textAlign: TextAlign.center,
             itemExtent: kItemHeight,
             height: kPickerHeight,
-            selectedTextStyle: TextStyle(color: Colors.black),
+            selectedTextStyle: myTextStyle(34, 0xff333333, false),
             onConfirm: clickCallBack)
         .showModal(context);
   }
