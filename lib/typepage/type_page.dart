@@ -18,67 +18,61 @@ import '../pages/bdc.dart';
 class ButtonDemoPage extends StatelessWidget {
   Map arguments;
   ButtonDemoPage({this.arguments});
-  
+
   Widget _typeChange() {
     switch (arguments["id"]) {
       case "0":
-        return YQSSCX(arguments:this.arguments);
+        return YQSSCX(arguments: this.arguments);
         break;
       case "1":
-        return TSSC(arguments:this.arguments);
+        return TSSC(arguments: this.arguments);
         break;
       case "2":
-        return News(arguments:this.arguments);
+        return News(arguments: this.arguments);
         break;
       case "3":
-        return HLHS(arguments:this.arguments);
+        return HLHS(arguments: this.arguments);
         break;
       case "4":
-        return XHDQ(arguments:this.arguments);
+        return XHDQ(arguments: this.arguments);
         break;
       case "5":
-        return ZGJM(arguments:this.arguments);
+        return ZGJM(arguments: this.arguments);
         break;
       case "6":
-        return SFZCX(arguments:this.arguments);
+        return SFZCX(arguments: this.arguments);
         break;
       case "7":
-        return HMGSD(arguments:this.arguments);
+        return HMGSD(arguments: this.arguments);
         break;
       case "8":
-        return IPCX(arguments:this.arguments);
+        return IPCX(arguments: this.arguments);
         break;
       case "9":
-        return NJJZW(arguments:this.arguments);
+        return NJJZW(arguments: this.arguments);
         break;
       case "10":
-        return HISTORY(arguments:this.arguments);
+        return HISTORY(arguments: this.arguments);
         break;
       case "11":
-        return JRYJ(arguments:this.arguments);
+        return JRYJ(arguments: this.arguments);
         break;
       case "12":
-        return JDJG(arguments:this.arguments);
+        return JDJG(arguments: this.arguments);
         break;
       case "13":
-        return CYC(arguments:this.arguments);
+        return CYC(arguments: this.arguments);
         break;
       case "14":
+        // return MyPicker();
         return BDC(arguments:this.arguments);
         break;
       default:
     }
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return _typeChange();
   }
 }
-
-
-
-
-

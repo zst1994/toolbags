@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
@@ -22,7 +23,10 @@ class HLHS extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Provide.value<HLHSProvide>(context).setMoney("");
+    Provide.value<HLHSProvide>(context).setCheckVal(["印尼卢比:IDR","印尼卢比:IDR"]);
+    
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Color(0xfff3f3f3),
         appBar: AppBar(
             elevation: 0.0,
@@ -50,124 +54,162 @@ class HLHS extends StatelessWidget {
                       Provide.value<HLHSProvide>(context).dataList;
                   checkDataList =
                       Provide.value<HLHSProvide>(context).checkDataList;
-                  return Column(
-                    children: <Widget>[
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border(
-                                bottom: BorderSide(
-                                    width: 1.w, color: Color(0xff999999)))),
-                        child: Row(
+                  return Stack(children: <Widget>[
+                    Align(
+                        alignment: Alignment.topCenter,
+                        child: Column(
                           children: <Widget>[
-                            Expanded(
-                                flex: 1,
-                                child: InkWell(
-                                    onTap: () {
-                                      JhPickerTool.showArrayPicker(context,
-                                          data: newHlhsDataList,
-                                          title: "货币汇率转换",
-                                          normalIndex: [0, 0], clickCallBack:
-                                              (var index, var strData) {
-                                        print(index);
-                                        print(strData);
-                                        Provide.value<HLHSProvide>(context)
-                                            .setCheckVal(strData);
-                                      });
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.only(
-                                          left: 40.w, top: 40.w, bottom: 40.w),
-                                      child: Text(checkDataList[0]),
-                                    ))),
-                            Expanded(
-                              flex: 1,
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxHeight: 80.h,
-                                ),
-                                child: TextField(
-                                    autofocus: false,
-                                    enableInteractiveSelection: false,
-                                    controller: editingController,
-                                    keyboardType: TextInputType.number,
-                                    textInputAction: TextInputAction.done,
-                                    textAlign: TextAlign.end,
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                          EdgeInsets.only(right: 40.w),
-                                      hintText: '请输入转换金额',
-                                      hintStyle:
-                                          myTextStyle(26, 0xff999999, false),
-                                      filled: true,
-                                      fillColor: Color(0xffffffff),
-                                      border: OutlineInputBorder(
-                                          borderSide: BorderSide.none),
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          width: 1.w,
+                                          color: Color(0xff999999)))),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                      flex: 1,
+                                      child: Container(
+                                        padding: EdgeInsets.only(
+                                            left: 40.w,
+                                            top: 40.w,
+                                            bottom: 40.w),
+                                        child: Text(checkDataList[0]),
+                                      )),
+                                  Expanded(
+                                    flex: 1,
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxHeight: 80.h,
+                                      ),
+                                      child: TextField(
+                                          autofocus: false,
+                                          enableInteractiveSelection: false,
+                                          controller: editingController,
+                                          keyboardType: TextInputType.number,
+                                          textInputAction: TextInputAction.done,
+                                          textAlign: TextAlign.end,
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                EdgeInsets.only(right: 40.w),
+                                            hintText: '请输入转换金额',
+                                            hintStyle: myTextStyle(
+                                                26, 0xff999999, false),
+                                            filled: true,
+                                            fillColor: Color(0xffffffff),
+                                            border: OutlineInputBorder(
+                                                borderSide: BorderSide.none),
+                                          ),
+                                          onEditingComplete: () {
+                                            _getHLHSContent(
+                                                context,
+                                                "https://route.showapi.com/105-31",
+                                                {
+                                                  "showapi_appid": "163854",
+                                                  "showapi_sign":
+                                                      "8cbeef1c2ec1486ea6957d1cffb25954",
+                                                  "fromCode": Provide.value<
+                                                          HLHSProvide>(context)
+                                                      .checkDataList[0]
+                                                      .toString()
+                                                      .split(":")[1],
+                                                  "toCode": Provide.value<
+                                                          HLHSProvide>(context)
+                                                      .checkDataList[1]
+                                                      .toString()
+                                                      .split(":")[1],
+                                                  "money":
+                                                      editingController.text
+                                                });
+                                            FocusScope.of(context)
+                                                .requestFocus(FocusNode());
+                                          }),
                                     ),
-                                    onEditingComplete: () {
-                                      _getHLHSContent(context,
-                                          "https://route.showapi.com/105-31", {
-                                        "showapi_appid": "163854",
-                                        "showapi_sign":
-                                            "8cbeef1c2ec1486ea6957d1cffb25954",
-                                        "fromCode":
-                                            Provide.value<HLHSProvide>(context)
-                                                .checkDataList[0]
-                                                .toString()
-                                                .split(":")[1],
-                                        "toCode":
-                                            Provide.value<HLHSProvide>(context)
-                                                .checkDataList[1]
-                                                .toString()
-                                                .split(":")[1],
-                                        "money": editingController.text
-                                      });
-                                      FocusScope.of(context)
-                                          .requestFocus(FocusNode());
-                                    }),
+                                  )
+                                ],
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        color: Colors.white,
-                        child: Row(
-                          children: <Widget>[
-                            InkWell(
-                                onTap: () {
-                                  JhPickerTool.showArrayPicker(context,
-                                      data: newHlhsDataList,
-                                      title: "货币汇率转换",
-                                      normalIndex: [0, 0],
-                                      clickCallBack: (var index, var strData) {
-                                    print(index);
-                                    print(strData);
-                                    Provide.value<HLHSProvide>(context)
-                                        .setCheckVal(strData);
-                                  });
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.only(
-                                      left: 40.w, top: 40.w, bottom: 40.w),
-                                  child: Text(checkDataList[1]),
-                                )),
-                            Expanded(
-                                flex: 1,
-                                child: Container(
-                                  padding: EdgeInsets.only(right: 40.w),
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    Provide.value<HLHSProvide>(context)
-                                        .changeMoney,
-                                    style: myTextStyle(32, 0xff333333, true),
+                            ),
+                            Container(
+                              color: Colors.white,
+                              child: Row(
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                        left: 40.w, top: 40.w, bottom: 40.w),
+                                    child: Text(checkDataList[1]),
                                   ),
-                                ))
+                                  Expanded(
+                                      flex: 1,
+                                      child: Container(
+                                        padding: EdgeInsets.only(right: 40.w),
+                                        alignment: Alignment.centerRight,
+                                        child: Text(
+                                          Provide.value<HLHSProvide>(context)
+                                              .changeMoney,
+                                          style:
+                                              myTextStyle(32, 0xff333333, true),
+                                        ),
+                                      ))
+                                ],
+                              ),
+                            ),
                           ],
-                        ),
+                        )),
+                    Align(
+                      alignment: Alignment(-1, 1),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                              flex: 1,
+                              child: Container(
+                                height: 400.h,
+                                child: CupertinoPicker(
+                                  diameterRatio: 1.5,
+                                  offAxisFraction: 0.2, //轴偏离系数
+                                  magnification: 1.2, //当前选中item放大倍数
+                                  itemExtent: 80.h, //行高
+                                  squeeze: 1.1,
+                                  backgroundColor: Colors.white, //选中器背景色
+                                  onSelectedItemChanged: (value) {
+                                    checkDataList[0] = newHlhsDataList[value];
+                                    Provide.value<HLHSProvide>(context)
+                                        .setCheckVal(checkDataList);
+                                  },
+                                  children: newHlhsDataList.map((data) {
+                                    return Center(
+                                      child: Text(data),
+                                    );
+                                  }).toList(),
+                                ),
+                              )),
+                          Expanded(
+                              flex: 1,
+                              child: Container(
+                                height: 400.h,
+                                child: CupertinoPicker(
+                                  diameterRatio: 1.5,
+                                  offAxisFraction: 0.2, //轴偏离系数
+                                  magnification: 1.2, //当前选中item放大倍数
+                                  itemExtent: 80.h, //行高
+                                  squeeze: 1.1,
+                                  backgroundColor: Colors.white, //选中器背景色
+                                  onSelectedItemChanged: (value) {
+                                    checkDataList[1] = newHlhsDataList[value];
+                                    Provide.value<HLHSProvide>(context)
+                                        .setCheckVal(checkDataList);
+                                  },
+                                  children: newHlhsDataList.map((data) {
+                                    return Center(
+                                      child: Text(data),
+                                    );
+                                  }).toList(),
+                                ),
+                              ))
+                        ],
                       ),
-                    ],
-                  );
+                    ),
+                  ]);
                 });
               } else {
                 return getAnaimation();
@@ -188,13 +230,13 @@ class HLHS extends StatelessWidget {
             hlTitle = k + ":" + v;
             print(k + ":" + v);
             hlhsListFirst.add(hlTitle);
-            hlhsListSecond.add(hlTitle);
+            // hlhsListSecond.add(hlTitle);
           }
         });
-        hlhsList.add(hlhsListFirst);
-        hlhsList.add(hlhsListSecond);
+        // hlhsList.add(hlhsListFirst);
+        // hlhsList.add(hlhsListSecond);
         print(hlhsList);
-        await Provide.value<HLHSProvide>(context).setVal(hlhsList);
+        await Provide.value<HLHSProvide>(context).setVal(hlhsListFirst);
         return "完成加载";
       } else {
         throw Exception('后端接口出现异常，请检测代码和服务器情况.........');

@@ -32,10 +32,10 @@ class JDJGProvide with ChangeNotifier {
       response = await dio.post(url, data: formData);
       if (response.statusCode == 200) {
         auLastDate = response.data["showapi_res_body"]["auLastDate"];
-        goldPrice = response.data["showapi_res_body"]["goldPrice"].toString();
-        print(auLastDate);
-        print(goldPrice);
-        return "完成加载";
+        goldPrice = response.data["showapi_res_body"]["goldPrice"]
+            .toStringAsFixed(2)
+            .toString();
+        notifyListeners();
       } else {
         throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
       }

@@ -96,6 +96,6 @@ List<Map> dateType = [
     "id": "14", 
     "src": "images/eng.png", 
     "text": "背单词",
-    "url": "https://route.showapi.com/8-11?showapi_appid=175397&showapi_sign=8b1d37c0b5a0423ea258a1b2450ebf8d"
+    "url": "https://route.showapi.com/8-11"
   }
 ];

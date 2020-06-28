@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
@@ -25,6 +26,7 @@ class _JDJGState extends State<JDJG> {
   String goldPrice;
   List jdList = [];
   List jdIDList = [];
+  List newIdList = [];
   List jdjgDataList;
   int checkDataIndex;
 
@@ -62,80 +64,102 @@ class _JDJGState extends State<JDJG> {
               return Provide<JDJGProvide>(builder: (context, child, val) {
                 jdjgDataList = Provide.value<JDJGProvide>(context).dataList;
                 checkDataIndex = Provide.value<JDJGProvide>(context).checkIndex;
+                newIdList = Provide.value<JDJGProvide>(context).newIdList;
                 auLastDate = Provide.value<JDJGProvide>(context).auLastDate;
                 goldPrice = Provide.value<JDJGProvide>(context).goldPrice;
 
-                return InkWell(
-                    onTap: () {
-                      JhPickerTool.showStringPicker(context,
-                          data: jdjgDataList, normalIndex: 0, title: "选择金店参考价格",
-                          clickCallBack: (int index, var str) {
-                        print(Provide.value<JDJGProvide>(context)
-                            .newIdList[checkDataIndex]);
-
-                        print(jdjgDataList[checkDataIndex]);
-                        Provide.value<JDJGProvide>(context).setIndex(index);
-                        Provide.value<JDJGProvide>(context).checkGlobalPrice(
-                            context, "https://route.showapi.com/2145-2", {
-                          "showapi_appid": "164610",
-                          "showapi_sign": "ba353723012c455896e4d91bfa1a3b45",
-                          "id": Provide.value<JDJGProvide>(context)
-                              .newIdList[checkDataIndex]
-                        });
-                      });
-                    },
-                    child: Container(
-                      height: 200.h,
-                      color: Colors.white,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                return Stack(
+                  children: <Widget>[
+                    Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                          height: 200.h,
+                          color: Colors.white,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Container(
-                                alignment: Alignment.center,
-                                width: 250.w,
-                                child: Text('珠宝店'),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: 250.w,
+                                    child: Text('珠宝店'),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: 250.w,
+                                    child: Text('金价'),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: 250.w,
+                                    child: Text('时间'),
+                                  )
+                                ],
                               ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: 250.w,
-                                child: Text('金价'),
+                              SizedBox(
+                                height: 30.w,
                               ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: 250.w,
-                                child: Text('时间'),
-                              )
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: 250.w,
+                                    child: Text(jdjgDataList[checkDataIndex]),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: 250.w,
+                                    child: Text(goldPrice),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: 250.w,
+                                    child: Text(auLastDate),
+                                  )
+                                ],
+                              ),
                             ],
                           ),
-                          SizedBox(
-                            height: 30.w,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Container(
-                                alignment: Alignment.center,
-                                width: 250.w,
-                                child: Text(jdjgDataList[checkDataIndex]),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: 250.w,
-                                child: Text(goldPrice),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: 250.w,
-                                child: Text(auLastDate),
-                              )
-                            ],
-                          )
-                        ],
+                        )),
+                    Align(
+                      alignment: Alignment(-1, 1),
+                      child: Container(
+                        height: 400.h,
+                        child: CupertinoPicker(
+                          diameterRatio: 1.5,
+                          offAxisFraction: 0.2, //轴偏离系数
+                          magnification: 1.2, //当前选中item放大倍数
+                          itemExtent: 80.h, //行高
+                          squeeze: 1.1,
+                          backgroundColor: Colors.white, //选中器背景色
+                          onSelectedItemChanged: (value) {
+                            Provide.value<JDJGProvide>(context).setIndex(value);
+                            print(value);
+                            Provide.value<JDJGProvide>(context)
+                                .checkGlobalPrice(context,
+                                    "https://route.showapi.com/2145-2", {
+                              "showapi_appid": "164610",
+                              "showapi_sign":
+                                  "ba353723012c455896e4d91bfa1a3b45",
+                              "id": Provide.value<JDJGProvide>(context)
+                                  .newIdList[value]
+                            });
+                          },
+                          children: jdjgDataList.map((data) {
+                            return Center(
+                              child: Text(data),
+                            );
+                          }).toList(),
+                        ),
                       ),
-                    ));
+                    ),
+                  ],
+                );
               });
             } else {
               return getAnaimation();
@@ -158,6 +182,12 @@ class _JDJGState extends State<JDJG> {
         });
 
         await Provide.value<JDJGProvide>(context).setVal(jdList, jdIDList);
+        await Provide.value<JDJGProvide>(context)
+            .checkGlobalPrice(context, "https://route.showapi.com/2145-2", {
+          "showapi_appid": "164610",
+          "showapi_sign": "ba353723012c455896e4d91bfa1a3b45",
+          "id": Provide.value<JDJGProvide>(context).newIdList[0]
+        });
         return "完成加载";
       } else {
         throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
