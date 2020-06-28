@@ -84,7 +84,7 @@ List<Map> dateType = [
     "id": "12", 
     "src": "images/gloal.png", 
     "text": "金店参考价格",
-    "url": ""
+    "url": "https://route.showapi.com/2145-1"
   },
   {
     "id": "13", 

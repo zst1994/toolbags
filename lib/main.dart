@@ -10,6 +10,7 @@ import 'package:toolbag/provide/history.dart';
 import 'package:toolbag/provide/hlhs.dart';
 import 'package:toolbag/provide/hmgsd.dart';
 import 'package:toolbag/provide/ipcx.dart';
+import 'package:toolbag/provide/jdjg.dart';
 import 'package:toolbag/provide/jryj.dart';
 import 'package:toolbag/provide/news.dart';
 import 'package:toolbag/provide/njjzw.dart';
@@ -35,6 +36,7 @@ void main() {
   var historyDataList = HistoryProvide();
   var hlhsDataList = HLHSProvide();
   var zgjmDataList = ZGJMProvide();
+  var jdjgDataList = JDJGProvide();
   
   var providers = Providers();
 
@@ -51,7 +53,8 @@ void main() {
     ..provide(Provider<CYCProvide>.value(cycDataList))
     ..provide(Provider<HistoryProvide>.value(historyDataList))
     ..provide(Provider<HLHSProvide>.value(hlhsDataList))
-    ..provide(Provider<ZGJMProvide>.value(zgjmDataList));
+    ..provide(Provider<ZGJMProvide>.value(zgjmDataList))
+    ..provide(Provider<JDJGProvide>.value(jdjgDataList));
 
   runApp(ProviderNode(child: MyApp(), providers: providers));
 
