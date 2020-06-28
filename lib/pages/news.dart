@@ -31,8 +31,7 @@ class _NewsState extends State<News> {
     super.initState();
 
     _controller.addListener(() {
-      if (_controller.position.pixels ==
-          _controller.position.maxScrollExtent) {
+      if (_controller.position.pixels == _controller.position.maxScrollExtent) {
         _getMore();
       }
     });
@@ -40,8 +39,6 @@ class _NewsState extends State<News> {
 
   @override
   Widget build(BuildContext context) {
-    // Provide.value<NEWSProvide>(context).setVal([]);
-    // Provide.value<NEWSProvide>(context).setNewsList([]);
     Provide.value<NEWSProvide>(context).setContentBool(false);
 
     return Scaffold(
@@ -83,6 +80,8 @@ class _NewsState extends State<News> {
                             () {
                           Provide.value<NEWSProvide>(context)
                               .setContentBool(true);
+                          Provide.value<NEWSProvide>(context).initNewsList();
+                          
                           _getNewsList(
                               context, "https://route.showapi.com/109-35", {
                             "showapi_appid": "163797",

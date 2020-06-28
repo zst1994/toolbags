@@ -1,23 +1,28 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provide/provide.dart';
 
 import 'package:toolbag/config/common.dart';
+import 'package:toolbag/provide/bdc.dart';
 
 class BDC extends StatelessWidget {
   Map arguments;
   BDC({this.arguments});
   final TextEditingController _searchController = TextEditingController();
+  List bdcDataList;
+  int checkIndex;
 
   @override
   Widget build(BuildContext context) {
-    _getHttp(context, arguments["url"], {
-      "showapi_appid": "175397",
-      "showapi_sign": "8b1d37c0b5a0423ea258a1b2450ebf8d",
-    });
+    Provide.value<BDCProvide>(context).initVal();
+    Provide.value<BDCProvide>(context).setSubIndex(0);
+
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Color(0xfff3f3f3),
         appBar: AppBar(
             elevation: 0.0,
@@ -33,17 +38,108 @@ class BDC extends StatelessWidget {
               arguments["title"],
               style: myTextStyle(38, 0xffffffff, false),
             )),
-        body: ListView(
-          children: <Widget>[
-            searchTitle(context, _searchController, "请选择类型", () {
-              print('his today');
-            })
-          ],
-        ));
+        body: FutureBuilder(
+            future: _getHttp(context, arguments["url"], {
+              "showapi_appid": "175397",
+              "showapi_sign": "8b1d37c0b5a0423ea258a1b2450ebf8d",
+            }),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Provide<BDCProvide>(builder: (context, child, val) {
+                  bdcDataList = Provide.value<BDCProvide>(context).dataList;
+                  checkIndex = Provide.value<BDCProvide>(context).index;
+                  _searchController.text = bdcDataList[checkIndex]["child_list"]
+                      [Provide.value<BDCProvide>(context).subIndex]["title"];
+                  print('checkIndex========$checkIndex');
+                  return Stack(children: <Widget>[
+                    Align(
+                        alignment: Alignment.topCenter,
+                        child: ListView(
+                          children: <Widget>[
+                            searchTitle(context, _searchController, "请选择类型",
+                                () {
+                              Navigator.pushNamed(context, '/words',
+                                  arguments: bdcDataList[checkIndex]
+                                          ["child_list"][
+                                      Provide.value<BDCProvide>(context)
+                                          .subIndex]);
+                            })
+                          ],
+                        )),
+                    Align(
+                      alignment: Alignment(-1, 1),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                              flex: 3,
+                              child: Container(
+                                height: 400.h,
+                                child: CupertinoPicker(
+                                  diameterRatio: 1.5,
+                                  offAxisFraction: 0.2, //轴偏离系数
+                                  magnification: 1.2, //当前选中item放大倍数
+                                  itemExtent: 80.h, //行高
+                                  squeeze: 1.1,
+                                  backgroundColor: Colors.white, //选中器背景色
+                                  onSelectedItemChanged: (value) {
+                                    Provide.value<BDCProvide>(context)
+                                        .setValue(value);
+                                  },
+                                  children: bdcDataList.map((data) {
+                                    return Center(
+                                      child: Text(
+                                        data["title"],
+                                        style:
+                                            myTextStyle(30, 0xff333333, true),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              )),
+                          Expanded(
+                              flex: 4,
+                              child: Container(
+                                height: 400.h,
+                                child: CupertinoPicker(
+                                  diameterRatio: 1.5,
+                                  offAxisFraction: 0.2, //轴偏离系数
+                                  magnification: 1.2, //当前选中item放大倍数
+                                  itemExtent: 80.h, //行高
+                                  squeeze: 1.1,
+                                  backgroundColor: Colors.white, //选中器背景色
+                                  onSelectedItemChanged: (value) {
+                                    Provide.value<BDCProvide>(context)
+                                        .setSubIndex(value);
+                                    _searchController.text =
+                                        bdcDataList[checkIndex]["child_list"]
+                                            [value]["title"];
+                                  },
+                                  children: (bdcDataList[checkIndex]
+                                          ["child_list"] as List)
+                                      .cast()
+                                      .map((data) {
+                                    return Center(
+                                      child: Text(
+                                        data["title"],
+                                        style:
+                                            myTextStyle(30, 0xff333333, true),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ))
+                        ],
+                      ),
+                    )
+                  ]);
+                });
+              } else {
+                return getAnaimation();
+              }
+            }));
   }
 
   Future _getHttp(BuildContext context, String url, Map formData) async {
-    // await Provide.value<CYCProvide>(context).setVal([]);
     try {
       Response response;
       Dio dio = new Dio();
@@ -51,8 +147,9 @@ class BDC extends StatelessWidget {
           ContentType.parse("application/x-www-form-urlencoded").toString();
       response = await dio.post(url, data: formData);
       if (response.statusCode == 200) {
-        print(response.data["showapi_res_body"]["typeList"]);
-        // await Provide.value<CYCProvide>(context).setVal(_cycList);
+        // print(response.data["showapi_res_body"]["typeList"]);
+        await Provide.value<BDCProvide>(context)
+            .setVal(response.data["showapi_res_body"]["typeList"]);
         return "完成加载";
       } else {
         throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
@@ -62,195 +159,3 @@ class BDC extends StatelessWidget {
     }
   }
 }
-
-
-
-// import 'package:flutter/material.dart';
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter/services.dart';
-// import 'dart:convert';
-
-// typedef List<Widget> CreateWidgetList();
-
-// class CityPicker {
-//   static Widget show() {
-//     return new _CityPicker();
-//   }
-// }
-
-// class _CityPicker extends StatefulWidget {
-//   @override
-//   State createState() {
-//     return new _CityPickerState();
-//   }
-// }
-
-// class _CityPickerState extends State<_CityPicker> {
-//   List data = new List();
-//   List province = new List();
-//   List city = new List();
-//   List area = new List();
-//   FixedExtentScrollController provinceController =
-//       new FixedExtentScrollController();
-//   FixedExtentScrollController cityController =
-//       new FixedExtentScrollController();
-//   FixedExtentScrollController areaController =
-//       new FixedExtentScrollController();
-//   int provinceIndex = 0;
-//   int cityIndex = 0;
-//   int areaIndex = 0;
-
-//   void _loadData() {
-//     rootBundle.loadString('assets/data/province.json').then((v) {
-//       List data = json.decode(v);
-//       setState(() {
-//         this.data = data;
-//         this.province = data;
-//         this.city = data[provinceIndex]['children'];
-//         this.area = data[provinceIndex]['children'][cityIndex]['children'];
-//       });
-//     });
-//   }
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _loadData();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return new Scaffold(
-//       appBar: new AppBar(
-//         title: new Text('省市县三级联动'),
-//         centerTitle: true,
-//       ),
-//       body: new Container(
-//         width: double.infinity,
-//         child: new Column(
-//           children: <Widget>[
-//             new Row(
-//               children: <Widget>[
-//                 FlatButton(onPressed: () {}, child: new Text('取消')),
-//                 FlatButton(
-//                     onPressed: () {
-//                       print(data[provinceIndex]);
-//                       print(data[provinceIndex]['children'][cityIndex]);
-//                       print(data[provinceIndex]['children'][cityIndex]
-//                           ['children'][areaIndex]);
-//                     },
-//                     child: new Text('选择')),
-//               ],
-//               mainAxisSize: MainAxisSize.max,
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             ),
-//             new Expanded(
-//               child: new Row(
-//                 mainAxisSize: MainAxisSize.max,
-//                 children: <Widget>[
-//                   new Expanded(
-//                     flex: 1,
-//                     child: new MyPicker(
-//                       controller: provinceController,
-//                       key: Key('province'),
-//                       createWidgetList: () {
-//                         return province.map((v) {
-//                           return new Text(v['label']);
-//                         }).toList();
-//                       },
-//                       changed: (int index) {
-//                         setState(() {
-//                           cityController.jumpToItem(0);
-//                           areaController.jumpToItem(0);
-//                           provinceIndex = index;
-//                           cityIndex = 0;
-//                           areaIndex = 0;
-//                           city = data[provinceIndex]['children'];
-//                           area = data[provinceIndex]['children'][cityIndex]
-//                               ['children'];
-//                         });
-//                       },
-//                     ),
-//                   ),
-//                   new Expanded(
-//                     flex: 1,
-//                     child: new MyPicker(
-//                       controller: cityController,
-//                       key: Key('city'),
-//                       createWidgetList: () {
-//                         return city.map((v) {
-//                           return new Text(v['label']);
-//                         }).toList();
-//                       },
-//                       changed: (index) {
-//                         setState(() {
-//                           areaController.jumpToItem(0);
-//                           cityIndex = index;
-//                           areaIndex = 0;
-//                           area = data[provinceIndex]['children'][cityIndex]
-//                               ['children'];
-//                         });
-//                       },
-//                     ),
-//                   ),
-//                   new Expanded(
-//                     flex: 1,
-//                     child: new MyPicker(
-//                       controller: areaController,
-//                       key: Key('area'),
-//                       createWidgetList: () {
-//                         return area.map((v) {
-//                           return new Text(v['label']);
-//                         }).toList();
-//                       },
-//                       changed: (index) {
-//                         setState(() {
-//                           areaIndex = index;
-//                         });
-//                       },
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class MyPicker extends StatefulWidget {
-//   final CreateWidgetList createWidgetList;
-//   final ValueChanged<int> changed;
-//   final Key key;
-//   final FixedExtentScrollController controller;
-
-//   MyPicker({this.createWidgetList, this.changed, this.key, this.controller});
-
-//   @override
-//   State createState() {
-//     return new _MyPickerState();
-//   }
-// }
-
-// class _MyPickerState extends State<MyPicker> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return new Container(
-//       child: new CupertinoPicker(
-//         key: widget.key,
-//         scrollController: widget.controller,
-//         itemExtent: 40.0,
-//         onSelectedItemChanged: (index) {
-//           if (widget.changed != null) {
-//             widget.changed(index);
-//           }
-//         },
-//         children: widget.createWidgetList().length > 0
-//             ? widget.createWidgetList()
-//             : [new Text('请选择')],
-//       ),
-//     );
-//   }
-// }

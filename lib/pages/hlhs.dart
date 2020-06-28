@@ -23,8 +23,8 @@ class HLHS extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Provide.value<HLHSProvide>(context).setMoney("");
-    Provide.value<HLHSProvide>(context).setCheckVal(["印尼卢比:IDR","印尼卢比:IDR"]);
-    
+    Provide.value<HLHSProvide>(context).setCheckVal(["印尼卢比:IDR", "印尼卢比:IDR"]);
+
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Color(0xfff3f3f3),
@@ -178,7 +178,11 @@ class HLHS extends StatelessWidget {
                                   },
                                   children: newHlhsDataList.map((data) {
                                     return Center(
-                                      child: Text(data),
+                                      child: Text(
+                                        data,
+                                        style:
+                                            myTextStyle(34, 0xff333333, true),
+                                      ),
                                     );
                                   }).toList(),
                                 ),
@@ -201,7 +205,11 @@ class HLHS extends StatelessWidget {
                                   },
                                   children: newHlhsDataList.map((data) {
                                     return Center(
-                                      child: Text(data),
+                                      child: Text(
+                                        data,
+                                        style:
+                                            myTextStyle(34, 0xff333333, true),
+                                      ),
                                     );
                                   }).toList(),
                                 ),

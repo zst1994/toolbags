@@ -5,6 +5,7 @@ import 'package:provide/provide.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:toolbag/provide/bdc.dart';
 import 'package:toolbag/provide/cyc.dart';
 import 'package:toolbag/provide/history.dart';
 import 'package:toolbag/provide/hlhs.dart';
@@ -37,6 +38,7 @@ void main() {
   var hlhsDataList = HLHSProvide();
   var zgjmDataList = ZGJMProvide();
   var jdjgDataList = JDJGProvide();
+  var bdcDataList = BDCProvide();
   
   var providers = Providers();
 
@@ -54,7 +56,8 @@ void main() {
     ..provide(Provider<HistoryProvide>.value(historyDataList))
     ..provide(Provider<HLHSProvide>.value(hlhsDataList))
     ..provide(Provider<ZGJMProvide>.value(zgjmDataList))
-    ..provide(Provider<JDJGProvide>.value(jdjgDataList));
+    ..provide(Provider<JDJGProvide>.value(jdjgDataList))
+    ..provide(Provider<BDCProvide>.value(bdcDataList));
 
   runApp(ProviderNode(child: MyApp(), providers: providers));
 

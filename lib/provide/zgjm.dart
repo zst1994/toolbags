@@ -14,7 +14,12 @@ class ZGJMProvide with ChangeNotifier {
     notifyListeners();
   }
 
-  initPage(){
+  initDataList() {
+    dataList = [];
+    notifyListeners();
+  }
+
+  initPage() {
     page = 1;
     notifyListeners();
   }

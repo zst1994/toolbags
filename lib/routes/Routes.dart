@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toolbag/pages/webview/web_view_pages.dart';
+import 'package:toolbag/pages/wordsList/words.dart';
 import '../typepage/type_page.dart';
 import '../splash_screen.dart';
 
@@ -9,6 +10,7 @@ final routes = {
   '/': (context) => SplashScreen(),
   '/buttonPage': (context, {arguments}) => ButtonDemoPage(arguments: arguments),
   '/webview': (context, {arguments}) => WebViewPage(arguments: arguments),
+  '/words': (context, {arguments}) => WordsPage(arguments: arguments),
 };
 
 //固定写法

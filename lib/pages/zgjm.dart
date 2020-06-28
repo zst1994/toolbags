@@ -64,6 +64,7 @@ class _ZGJMState extends State<ZGJM> {
             padding: EdgeInsets.only(top: 15.w),
             children: <Widget>[
               searchTitle(context, _searchController, "请输入解梦关键词搜索", () {
+                Provide.value<ZGJMProvide>(context).initDataList();
                 _getHttp(context, widget.arguments["url"], {
                   "showapi_appid": "163969",
                   "showapi_sign": "75eb02a80a8e41c0b746bac893fc8a3f",
@@ -159,7 +160,6 @@ class _ZGJMState extends State<ZGJM> {
         } else {
           shortToast("没数据了......");
         }
-
         return "完成加载";
       } else {
         throw Exception('后端接口出现异常，请检测代码和服务器情况.........');

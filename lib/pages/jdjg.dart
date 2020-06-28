@@ -152,7 +152,10 @@ class _JDJGState extends State<JDJG> {
                           },
                           children: jdjgDataList.map((data) {
                             return Center(
-                              child: Text(data),
+                              child: Text(
+                                data,
+                                style: myTextStyle(34, 0xff333333, true),
+                              ),
                             );
                           }).toList(),
                         ),
