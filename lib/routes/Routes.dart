@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:toolbag/pages/login/loginUser.dart';
+import 'package:toolbag/pages/personal/personalData.dart';
 import 'package:toolbag/pages/webview/web_view_pages.dart';
 import 'package:toolbag/pages/wordsList/words.dart';
 import '../typepage/type_page.dart';
@@ -11,6 +13,8 @@ final routes = {
   '/buttonPage': (context, {arguments}) => ButtonDemoPage(arguments: arguments),
   '/webview': (context, {arguments}) => WebViewPage(arguments: arguments),
   '/words': (context, {arguments}) => WordsPage(arguments: arguments),
+  '/login': (context, {arguments}) => LoginPage(),
+  '/personal': (context, {arguments}) => PersonalPage()
 };
 
 //固定写法

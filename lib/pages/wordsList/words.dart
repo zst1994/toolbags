@@ -48,7 +48,7 @@ class _WordsPageState extends State<WordsPage> {
                 'images/fanhui_01@2x.png',
                 width: 18.w,
               ),
-              onPressed: () => Navigator.pop(context,"true"),),
+              onPressed: () => Navigator.pop(context,),),
           centerTitle: true,
           backgroundColor: Color(0xff09abf7),
           title: Text(

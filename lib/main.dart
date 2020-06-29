@@ -13,6 +13,7 @@ import 'package:toolbag/provide/hmgsd.dart';
 import 'package:toolbag/provide/ipcx.dart';
 import 'package:toolbag/provide/jdjg.dart';
 import 'package:toolbag/provide/jryj.dart';
+import 'package:toolbag/provide/more.dart';
 import 'package:toolbag/provide/news.dart';
 import 'package:toolbag/provide/njjzw.dart';
 import 'package:toolbag/provide/sfzcx.dart';
@@ -39,6 +40,7 @@ void main() {
   var zgjmDataList = ZGJMProvide();
   var jdjgDataList = JDJGProvide();
   var bdcDataList = BDCProvide();
+  var moreDataList = MoreProvide();
   
   var providers = Providers();
 
@@ -57,7 +59,8 @@ void main() {
     ..provide(Provider<HLHSProvide>.value(hlhsDataList))
     ..provide(Provider<ZGJMProvide>.value(zgjmDataList))
     ..provide(Provider<JDJGProvide>.value(jdjgDataList))
-    ..provide(Provider<BDCProvide>.value(bdcDataList));
+    ..provide(Provider<BDCProvide>.value(bdcDataList))
+    ..provide(Provider<MoreProvide>.value(moreDataList));
 
   runApp(ProviderNode(child: MyApp(), providers: providers));
 
