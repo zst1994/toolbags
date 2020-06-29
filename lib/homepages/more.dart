@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:toolbag/config/common.dart';
@@ -70,7 +71,7 @@ class MorePages extends StatelessWidget {
         ),
         InkWell(
           onTap: () {
-            print('object');
+            showMyMaterialDialog(context);
           },
           child: Container(
             color: Colors.white,
@@ -99,5 +100,61 @@ class MorePages extends StatelessWidget {
         )
       ],
     );
+  }
+
+  void showMyMaterialDialog(BuildContext context) {
+    showCupertinoDialog(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Center(
+              child: Text(
+                '提示',
+                style: myTextStyle(36, 0xff2b2b2b, false),
+              ),
+            ),
+            content: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 18.h,
+                ),
+                Text(
+                  '确认退出登录吗?',
+                  style: myTextStyle(32, 0xff666666, false),
+                ),
+                SizedBox(
+                  height: 8.h,
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              Container(
+                margin: EdgeInsets.only(top: 6.w, bottom: 6.w),
+                child: FlatButton(
+                  onPressed: () => Navigator.of(context).pop("点击了取消"),
+                  child: Text(
+                    "取消",
+                    style: TextStyle(
+                        fontSize: 34.sp,
+                        color: Color(0xff000000),
+                        fontWeight: FontWeight.normal),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 6.w, bottom: 6.w),
+                child: FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    "确认退出",
+                    style: myTextStyle(34, 0xff3594ff, true),
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
   }
 }
