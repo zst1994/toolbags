@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,9 +52,27 @@ class _JDJGState extends State<JDJG> {
             style: myTextStyle(38, 0xffffffff, false),
           )),
       body: FutureBuilder(
-          future: _getHttp(context, arguments["url"], {
+          future: getHttp(context, arguments["url"], {
             "showapi_appid": "164610",
             "showapi_sign": "ba353723012c455896e4d91bfa1a3b45",
+          }, (data) async {
+            data["showapi_res_body"]["data"].forEach((item) {
+              jdList.add(item["brand"]);
+              jdIDList.add(item["_id"]);
+            });
+            await Provide.value<JDJGProvide>(context).setVal(jdList, jdIDList);
+            await getHttp(context, "https://route.showapi.com/2145-2", {
+              "showapi_appid": "164610",
+              "showapi_sign": "ba353723012c455896e4d91bfa1a3b45",
+              "id": Provide.value<JDJGProvide>(context).newIdList[0]
+            }, (data) async {
+              String auLast = data["showapi_res_body"]["auLastDate"];
+              String price = data["showapi_res_body"]["goldPrice"]
+                  .toStringAsFixed(2)
+                  .toString();
+              await Provide.value<JDJGProvide>(context)
+                  .setGoldPrice(auLast, price);
+            });
           }),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -139,15 +154,22 @@ class _JDJGState extends State<JDJG> {
                           backgroundColor: Colors.white, //选中器背景色
                           onSelectedItemChanged: (value) {
                             Provide.value<JDJGProvide>(context).setIndex(value);
-                            print(value);
-                            Provide.value<JDJGProvide>(context)
-                                .checkGlobalPrice(context,
-                                    "https://route.showapi.com/2145-2", {
+                            getHttp(
+                                context, "https://route.showapi.com/2145-2", {
                               "showapi_appid": "164610",
                               "showapi_sign":
                                   "ba353723012c455896e4d91bfa1a3b45",
                               "id": Provide.value<JDJGProvide>(context)
                                   .newIdList[value]
+                            }, (data) async {
+                              String auLast =
+                                  data["showapi_res_body"]["auLastDate"];
+                              String price = data["showapi_res_body"]
+                                      ["goldPrice"]
+                                  .toStringAsFixed(2)
+                                  .toString();
+                              await Provide.value<JDJGProvide>(context)
+                                  .setGoldPrice(auLast, price);
                             });
                           },
                           children: jdjgDataList.map((data) {
@@ -169,34 +191,5 @@ class _JDJGState extends State<JDJG> {
             }
           }),
     );
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      if (response.statusCode == 200) {
-        response.data["showapi_res_body"]["data"].forEach((item) {
-          jdList.add(item["brand"]);
-          jdIDList.add(item["_id"]);
-        });
-
-        await Provide.value<JDJGProvide>(context).setVal(jdList, jdIDList);
-        await Provide.value<JDJGProvide>(context)
-            .checkGlobalPrice(context, "https://route.showapi.com/2145-2", {
-          "showapi_appid": "164610",
-          "showapi_sign": "ba353723012c455896e4d91bfa1a3b45",
-          "id": Provide.value<JDJGProvide>(context).newIdList[0]
-        });
-        return "完成加载";
-      } else {
-        throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
-      }
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
   }
 }

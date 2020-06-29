@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
@@ -36,10 +33,13 @@ class SFZCX extends StatelessWidget {
         body: ListView(
           children: <Widget>[
             searchTitle(context, _searchController, "请输入身份证号码查询", () {
-              _getHttp(context, arguments["url"], {
+              getHttp(context, arguments["url"], {
                 "showapi_appid": "164005",
                 "showapi_sign": "752362a805704af9bbd6fbffb2283cee",
                 "id": _searchController.text
+              }, (data) async {
+                await Provide.value<SFZCXProvide>(context)
+                    .setVal(data["showapi_res_body"]["retData"]);
               });
             }),
             _sfzMess()
@@ -51,9 +51,9 @@ class SFZCX extends StatelessWidget {
     return Provide<SFZCXProvide>(builder: (context, child, val) {
       sfzData = Provide.value<SFZCXProvide>(context).dataList;
 
-      if(sfzData["sex"] == "M") {
+      if (sfzData["sex"] == "M") {
         sex = "男";
-      } else if(sfzData["sex"] == "F") {
+      } else if (sfzData["sex"] == "F") {
         sex = "女";
       } else {
         sex = "";
@@ -97,20 +97,5 @@ class SFZCX extends StatelessWidget {
         ),
       );
     });
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      await Provide.value<SFZCXProvide>(context)
-          .setVal(response.data["showapi_res_body"]["retData"]);
-      return "完成加载";
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
   }
 }

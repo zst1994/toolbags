@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:date_format/date_format.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_picker/flutter_picker.dart';
@@ -302,5 +303,24 @@ class JhPickerTool {
       }
       clickCallback(timeStr, picker.adapter.text);
     });
+  }
+}
+
+Future getHttp(
+    BuildContext context, String url, Map formData, Function callBack) async {
+  try {
+    Response response;
+    Dio dio = new Dio();
+    dio.options.contentType =
+        ContentType.parse("application/x-www-form-urlencoded").toString();
+    response = await dio.post(url, data: formData);
+    if (response.statusCode == 200) {
+      callBack(response.data);
+      return "完成加载";
+    } else {
+      throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
+    }
+  } catch (e) {
+    shortToast("接口异常,请明天再尝试！");
   }
 }

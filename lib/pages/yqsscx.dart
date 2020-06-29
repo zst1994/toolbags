@@ -1,7 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
@@ -38,9 +34,71 @@ class YQSSCX extends StatelessWidget {
               style: myTextStyle(38, 0xffffffff, false),
             )),
         body: FutureBuilder(
-            future: _getHttp(context, arguments["url"], {
+            future: getHttp(context, arguments["url"], {
               "showapi_appid": "166717",
               "showapi_sign": "5940b7d81a7d4979b120004d17c1ae74"
+            }, (data) async {
+              _yqBottomContentList =
+                  data["showapi_res_body"]["todayDetailList"];
+              _yqBottomContentList.forEach((item) {
+                item.addAll({"open": false});
+              });
+              Provide.value<YQSSCXProvide>(context)
+                  .setVal(_yqBottomContentList);
+
+              updateTime = data["showapi_res_body"]["updateTime"];
+              Map todayStatictic = data["showapi_res_body"]["todayStatictic"];
+              todayStatictic["curedIncr"] = todayStatictic["curedIncr"] ?? 0;
+              todayStatictic["confirmedIncr"] =
+                  todayStatictic["confirmedIncr"] ?? 0;
+              todayStatictic["suspectedIncr"] =
+                  todayStatictic["suspectedIncr"] ?? 0;
+              todayStatictic["seriousIncr"] =
+                  todayStatictic["seriousIncr"] ?? 0;
+              todayStatictic["deadIncr"] = todayStatictic["deadIncr"] ?? 0;
+
+              list = [
+                {
+                  "color": 0xfff76809,
+                  "title": "现存确诊",
+                  "todayNum": todayStatictic["confirmedNum"],
+                  "todayAdd": todayStatictic["confirmedIncr"] -
+                      todayStatictic["curedIncr"] -
+                      todayStatictic["deadIncr"]
+                },
+                {
+                  "color": 0xfff7ac09,
+                  "title": "境外输入",
+                  "todayNum": todayStatictic["suspectedNum"],
+                  "todayAdd": todayStatictic["suspectedIncr"]
+                },
+                {
+                  "color": 0xffbe6d37,
+                  "title": "现存无症状",
+                  "todayNum": todayStatictic["seriousNum"],
+                  "todayAdd": todayStatictic["seriousIncr"]
+                },
+                {
+                  "color": 0xff92410b,
+                  "title": "累计确诊",
+                  "todayNum": todayStatictic["curedNum"] +
+                      todayStatictic["deadNum"] +
+                      todayStatictic["confirmedNum"],
+                  "todayAdd": todayStatictic["confirmedIncr"]
+                },
+                {
+                  "color": 0xff2d82aa,
+                  "title": "累计死亡",
+                  "todayNum": todayStatictic["deadNum"],
+                  "todayAdd": todayStatictic["deadIncr"]
+                },
+                {
+                  "color": 0xff2ed897,
+                  "title": "累计治愈",
+                  "todayNum": todayStatictic["curedNum"],
+                  "todayAdd": todayStatictic["curedIncr"]
+                }
+              ];
             }),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -387,76 +445,6 @@ class YQSSCX extends StatelessWidget {
         );
       }).toList(),
     );
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      _yqBottomContentList =
-          response.data["showapi_res_body"]["todayDetailList"];
-      _yqBottomContentList.forEach((item) {
-        item.addAll({"open": false});
-      });
-      Provide.value<YQSSCXProvide>(context).setVal(_yqBottomContentList);
-
-      updateTime = response.data["showapi_res_body"]["updateTime"];
-      Map todayStatictic = response.data["showapi_res_body"]["todayStatictic"];
-      todayStatictic["curedIncr"] = todayStatictic["curedIncr"] ?? 0;
-      todayStatictic["confirmedIncr"] = todayStatictic["confirmedIncr"] ?? 0;
-      todayStatictic["suspectedIncr"] = todayStatictic["suspectedIncr"] ?? 0;
-      todayStatictic["seriousIncr"] = todayStatictic["seriousIncr"] ?? 0;
-      todayStatictic["deadIncr"] = todayStatictic["deadIncr"] ?? 0;
-
-      list = [
-        {
-          "color": 0xfff76809,
-          "title": "现存确诊",
-          "todayNum": todayStatictic["confirmedNum"],
-          "todayAdd": todayStatictic["confirmedIncr"] -
-              todayStatictic["curedIncr"] -
-              todayStatictic["deadIncr"]
-        },
-        {
-          "color": 0xfff7ac09,
-          "title": "境外输入",
-          "todayNum": todayStatictic["suspectedNum"],
-          "todayAdd": todayStatictic["suspectedIncr"]
-        },
-        {
-          "color": 0xffbe6d37,
-          "title": "现存无症状",
-          "todayNum": todayStatictic["seriousNum"],
-          "todayAdd": todayStatictic["seriousIncr"]
-        },
-        {
-          "color": 0xff92410b,
-          "title": "累计确诊",
-          "todayNum": todayStatictic["curedNum"] +
-              todayStatictic["deadNum"] +
-              todayStatictic["confirmedNum"],
-          "todayAdd": todayStatictic["confirmedIncr"]
-        },
-        {
-          "color": 0xff2d82aa,
-          "title": "累计死亡",
-          "todayNum": todayStatictic["deadNum"],
-          "todayAdd": todayStatictic["deadIncr"]
-        },
-        {
-          "color": 0xff2ed897,
-          "title": "累计治愈",
-          "todayNum": todayStatictic["curedNum"],
-          "todayAdd": todayStatictic["curedIncr"]
-        }
-      ];
-      return list;
-    } catch (e) {
-      return print("eeeeeeeeeee=$e");
-    }
   }
 }
 //疫情实时查询

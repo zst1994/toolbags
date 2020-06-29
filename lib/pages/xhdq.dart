@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,10 +30,13 @@ class XHDQ extends StatelessWidget {
               style: myTextStyle(38, 0xffffffff, false),
             )),
         body: FutureBuilder(
-            future: _getHttp(context, arguments["url"], {
+            future: getHttp(context, arguments["url"], {
               "showapi_appid": "163892",
               "showapi_sign": "2bf78728c6344e559f159871f2fb7ead",
               "len": 100
+            }, (data) async {
+              await Provide.value<XHProvide>(context)
+                  .setVal(data["showapi_res_body"]["list"]);
             }),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -79,26 +79,5 @@ class XHDQ extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    await Provide.value<XHProvide>(context).setVal([]);
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      if (response.statusCode == 200) {
-        print(response.data);
-        await Provide.value<XHProvide>(context)
-            .setVal(response.data["showapi_res_body"]["list"]);
-        return "完成加载";
-      } else {
-        throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
-      }
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
   }
 }

@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
@@ -35,10 +32,13 @@ class HMGSD extends StatelessWidget {
         body: ListView(
           children: <Widget>[
             searchTitle(context, _searchController, "请输入手机号码查询", () {
-              _getHttp(context, arguments["url"], {
+              getHttp(context, arguments["url"], {
                 "showapi_appid": "164260",
                 "showapi_sign": "8bee29c8c2284c61939200ec8e83db8d",
                 "num": _searchController.text
+              }, (data) async {
+                await Provide.value<HMGSDProvide>(context)
+                    .setVal(data["showapi_res_body"]);
               });
             }),
             _hmgsdMess()
@@ -118,20 +118,5 @@ class HMGSD extends StatelessWidget {
         ),
       );
     });
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      await Provide.value<HMGSDProvide>(context)
-          .setVal(response.data["showapi_res_body"]);
-      return "完成加载";
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
   }
 }

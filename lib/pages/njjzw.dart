@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
@@ -33,10 +30,16 @@ class NJJZW extends StatelessWidget {
             style: myTextStyle(38, 0xffffffff, false),
           )),
       body: FutureBuilder(
-          future: _getHttp(context, arguments["url"], {
+          future: getHttp(context, arguments["url"], {
             "showapi_appid": "164295",
             "showapi_sign": "b2bbafb52856402abfacc2a6e016c8f8",
             "len": 100
+          }, (data) async {
+            _njList = data["showapi_res_body"]["list"];
+            _njList.forEach((item) {
+              item.addAll({"open": false});
+            });
+            await Provide.value<NJJZWProvide>(context).setVal(_njList);
           }),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -107,31 +110,5 @@ class NJJZW extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    await Provide.value<NJJZWProvide>(context).setVal([]);
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      if (response.statusCode == 200) {
-        print(response.data);
-
-        _njList = response.data["showapi_res_body"]["list"];
-        _njList.forEach((item) {
-          item.addAll({"open": false});
-        });
-
-        await Provide.value<NJJZWProvide>(context).setVal(_njList);
-        return "完成加载";
-      } else {
-        throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
-      }
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
   }
 }

@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,9 +40,18 @@ class HLHS extends StatelessWidget {
               style: myTextStyle(38, 0xffffffff, false),
             )),
         body: FutureBuilder(
-            future: _getHttp(context, arguments["url"], {
+            future: getHttp(context, arguments["url"], {
               "showapi_appid": "163854",
               "showapi_sign": "8cbeef1c2ec1486ea6957d1cffb25954",
+            }, (data) async {
+              data["showapi_res_body"].forEach((k, v) {
+                if (v is String) {
+                  hlTitle = k + ":" + v;
+                  print(k + ":" + v);
+                  hlhsListFirst.add(hlTitle);
+                }
+              });
+              await Provide.value<HLHSProvide>(context).setVal(hlhsListFirst);
             }),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -102,7 +108,7 @@ class HLHS extends StatelessWidget {
                                                 borderSide: BorderSide.none),
                                           ),
                                           onEditingComplete: () {
-                                            _getHLHSContent(
+                                            getHttp(
                                                 context,
                                                 "https://route.showapi.com/105-31",
                                                 {
@@ -121,7 +127,13 @@ class HLHS extends StatelessWidget {
                                                       .split(":")[1],
                                                   "money":
                                                       editingController.text
-                                                });
+                                                }, (data) async {
+                                              await Provide.value<HLHSProvide>(
+                                                      context)
+                                                  .setMoney(
+                                                      data["showapi_res_body"]
+                                                          ["money"]);
+                                            });
                                             FocusScope.of(context)
                                                 .requestFocus(FocusNode());
                                           }),
@@ -223,53 +235,5 @@ class HLHS extends StatelessWidget {
                 return getAnaimation();
               }
             }));
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      if (response.statusCode == 200) {
-        response.data["showapi_res_body"].forEach((k, v) {
-          if (v is String) {
-            hlTitle = k + ":" + v;
-            print(k + ":" + v);
-            hlhsListFirst.add(hlTitle);
-            // hlhsListSecond.add(hlTitle);
-          }
-        });
-        // hlhsList.add(hlhsListFirst);
-        // hlhsList.add(hlhsListSecond);
-        print(hlhsList);
-        await Provide.value<HLHSProvide>(context).setVal(hlhsListFirst);
-        return "完成加载";
-      } else {
-        throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
-      }
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
-  }
-
-  Future _getHLHSContent(BuildContext context, String url, Map formData) async {
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      if (response.statusCode == 200) {
-        await Provide.value<HLHSProvide>(context)
-            .setMoney(response.data["showapi_res_body"]["money"]);
-        return "完成加载";
-      } else {
-        throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
-      }
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
   }
 }

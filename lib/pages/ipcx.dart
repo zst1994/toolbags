@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
@@ -36,10 +33,13 @@ class IPCX extends StatelessWidget {
           children: <Widget>[
             searchTitle(context, _searchController, "请输入ip地址查询(例:172.0.0.1)",
                 () {
-              _getHttp(context, arguments["url"], {
+              getHttp(context, arguments["url"], {
                 "showapi_appid": "164263",
                 "showapi_sign": "8ed2e75d5ce543d1beaad4f1d73d7a06",
                 "ip": _searchController.text
+              }, (data) async {
+                await Provide.value<IPCXProvide>(context)
+                    .setVal(data["showapi_res_body"]);
               });
             }),
             _ipMess()
@@ -159,20 +159,5 @@ class IPCX extends StatelessWidget {
         ),
       );
     });
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      await Provide.value<IPCXProvide>(context)
-          .setVal(response.data["showapi_res_body"]);
-      return "完成加载";
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
   }
 }

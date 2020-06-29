@@ -1,7 +1,4 @@
-import 'dart:io';
 import 'dart:math';
-
-import 'package:dio/dio.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,6 +20,7 @@ class _TSSCState extends State<TSSC> {
   ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
   List<Map> data;
+  String author;
   List prelist = [
     "李白",
     "杜甫",
@@ -34,13 +32,8 @@ class _TSSCState extends State<TSSC> {
   @override
   void initState() {
     super.initState();
-    String author = prelist[Random().nextInt(prelist.length)];
-    _getHttp(context, widget.arguments["url"], {
-      "showapi_appid": "163751",
-      "showapi_sign": "64e0f205797744a08876bc926732c373",
-      "poet": author
-    });
-
+    author = prelist[Random().nextInt(prelist.length)];
+    print(author);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -68,22 +61,53 @@ class _TSSCState extends State<TSSC> {
               widget.arguments["title"],
               style: myTextStyle(38, 0xffffffff, false),
             )),
-        body: RefreshIndicator(
-          onRefresh: _onRefresh,
-          child: ListView(
-            controller: _scrollController,
-            children: <Widget>[
-              searchTitle(context, _searchController, "请输入作者名称搜索", () {
-                _getHttp(context, widget.arguments["url"], {
-                  "showapi_appid": "163751",
-                  "showapi_sign": "64e0f205797744a08876bc926732c373",
-                  "poet": _searchController.text
-                });
-              }),
-              _scContent()
-            ],
-          ),
-        ));
+        body: FutureBuilder(
+            future: getHttp(context, widget.arguments["url"], {
+              "showapi_appid": "163751",
+              "showapi_sign": "64e0f205797744a08876bc926732c373",
+              "poet": author
+            }, (data) {
+              String poetId = data["showapi_res_body"]["poetInfo"][0]["poetId"];
+              String biography =
+                  data["showapi_res_body"]["poetInfo"][0]["biography"];
+              print(poetId);
+              print(biography);
+              Provide.value<TSSCProvide>(context).setVal(poetId, biography);
+              Provide.value<TSSCProvide>(context).setList([]);
+              _getTSContent();
+            }),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return RefreshIndicator(
+                  onRefresh: _onRefresh,
+                  child: ListView(
+                    controller: _scrollController,
+                    children: <Widget>[
+                      searchTitle(context, _searchController, "请输入作者名称搜索", () {
+                        getHttp(context, widget.arguments["url"], {
+                          "showapi_appid": "163751",
+                          "showapi_sign": "64e0f205797744a08876bc926732c373",
+                          "poet": _searchController.text
+                        }, (data) async {
+                          String poetId =
+                              data["showapi_res_body"]["poetInfo"][0]["poetId"];
+                          String biography = data["showapi_res_body"]
+                              ["poetInfo"][0]["biography"];
+                          print(poetId);
+                          print(biography);
+                          await Provide.value<TSSCProvide>(context)
+                              .setVal(poetId, biography);
+                          await _getTSContent();
+                        });
+                      }),
+                      _scContent()
+                    ],
+                  ),
+                );
+              } else {
+                return getAnaimation();
+              }
+            }));
   }
 
   Widget _scContent() {
@@ -187,7 +211,7 @@ class _TSSCState extends State<TSSC> {
           }).toList(),
         );
       } else {
-        return getAnaimation();
+        return Container();
       }
     });
   }
@@ -195,38 +219,30 @@ class _TSSCState extends State<TSSC> {
   Future _onRefresh() async {
     await Provide.value<TSSCProvide>(context).initPage();
     print(Provide.value<TSSCProvide>(context).page);
-    await Provide.value<TSSCProvide>(context).getTSContent();
+    await _getTSContent();
   }
 
   Future _getMore() async {
     await Provide.value<TSSCProvide>(context).addPage();
     print(Provide.value<TSSCProvide>(context).page);
-    await Provide.value<TSSCProvide>(context).getTSContent();
+    await _getTSContent();
   }
 
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    print(formData);
-    // await Provide.value<TSSCProvide>(context).initDataList();
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-
-      String poetId =
-          response.data["showapi_res_body"]["poetInfo"][0]["poetId"];
-      String biography =
-          response.data["showapi_res_body"]["poetInfo"][0]["biography"];
-      print(poetId);
-      print(biography);
-      await Provide.value<TSSCProvide>(context).setVal(poetId, biography);
-      await Provide.value<TSSCProvide>(context).getTSContent();
-
-      return "完成加载";
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
+  Future _getTSContent() async {
+    getHttp(context, "https://route.showapi.com/1620-5", {
+      "showapi_appid": "163751",
+      "showapi_sign": "64e0f205797744a08876bc926732c373",
+      "poetId": Provide.value<TSSCProvide>(context).poetId,
+      "page": Provide.value<TSSCProvide>(context).page.toString()
+    }, (data) async {
+      if (data["showapi_res_body"]["poemInfo"].length > 0) {
+        List<Map> newList = Provide.value<TSSCProvide>(context).dataList;
+        newList.addAll((data["showapi_res_body"]["poemInfo"] as List).cast());
+        Provide.value<TSSCProvide>(context).setList(newList);
+      } else {
+        shortToast("没数据了......");
+      }
+    });
   }
 }
 //唐诗宋词元曲

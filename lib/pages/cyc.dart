@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
@@ -33,9 +30,15 @@ class CYC extends StatelessWidget {
             style: myTextStyle(38, 0xffffffff, false),
           )),
       body: FutureBuilder(
-          future: _getHttp(context, arguments["url"], {
+          future: getHttp(context, arguments["url"], {
             "showapi_appid": "168071",
             "showapi_sign": "b170d2ee39d94917a707e201abe1e48a",
+          }, (data) async {
+            _cycList = data["showapi_res_body"]["pagebean"]["contentlist"];
+            _cycList.forEach((item) {
+              item.addAll({"open": false});
+            });
+            await Provide.value<CYCProvide>(context).setVal(_cycList);
           }),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -116,31 +119,5 @@ class CYC extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    // await Provide.value<CYCProvide>(context).setVal([]);
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      if (response.statusCode == 200) {
-        print(response.data);
-
-        _cycList = response.data["showapi_res_body"]["pagebean"]["contentlist"];
-        _cycList.forEach((item) {
-          item.addAll({"open": false});
-        });
-
-        await Provide.value<CYCProvide>(context).setVal(_cycList);
-        return "完成加载";
-      } else {
-        throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
-      }
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
   }
 }

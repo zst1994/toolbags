@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
@@ -34,13 +31,21 @@ class JRYJ extends StatelessWidget {
             )),
         body: ListView(
           children: <Widget>[
-            searchTitle(context, _searchController, "请输入省份查询油价(例：广东)", () {
-              _getHttp(context, arguments["url"], {
-                "showapi_appid": "164572",
-                "showapi_sign": "0c5ee55884604b469d8db50f7519b73b",
-                "prov": _searchController.text
-              });
-            }),
+            searchTitle(
+              context,
+              _searchController,
+              "请输入省份查询油价(例：广东)",
+              () {
+                getHttp(context, arguments["url"], {
+                  "showapi_appid": "164572",
+                  "showapi_sign": "0c5ee55884604b469d8db50f7519b73b",
+                  "prov": _searchController.text
+                }, (data) async {
+                  await Provide.value<JRYJProvide>(context)
+                      .setVal(data["showapi_res_body"]["list"][0]);
+                });
+              },
+            ),
             _yjMess()
           ],
         ));
@@ -49,7 +54,7 @@ class JRYJ extends StatelessWidget {
   Widget _yjMess() {
     return Provide<JRYJProvide>(builder: (context, child, val) {
       jryjDataList = Provide.value<JRYJProvide>(context).dataList;
-      
+
       String time = jryjDataList["ct"] ?? "";
       if (time.length > 0) {
         time = time.substring(0, 19);
@@ -163,20 +168,5 @@ class JRYJ extends StatelessWidget {
         ),
       );
     });
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      await Provide.value<JRYJProvide>(context)
-          .setVal(response.data["showapi_res_body"]["list"][0]);
-      return "完成加载";
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
   }
 }

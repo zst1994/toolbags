@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
@@ -58,9 +55,12 @@ class _NewsState extends State<News> {
               style: myTextStyle(38, 0xffffffff, false),
             )),
         body: FutureBuilder(
-            future: _getHttp(context, widget.arguments["url"], {
+            future: getHttp(context, widget.arguments["url"], {
               "showapi_appid": "163797",
               "showapi_sign": "7167be83432346a79e6cdf50e16b88dd",
+            }, (data) async {
+              await Provide.value<NEWSProvide>(context)
+                  .setVal(data["showapi_res_body"]["channelList"]);
             }),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -81,13 +81,16 @@ class _NewsState extends State<News> {
                           Provide.value<NEWSProvide>(context)
                               .setContentBool(true);
                           Provide.value<NEWSProvide>(context).initNewsList();
-                          
-                          _getNewsList(
-                              context, "https://route.showapi.com/109-35", {
+
+                          getHttp(context, "https://route.showapi.com/109-35", {
                             "showapi_appid": "163797",
                             "showapi_sign": "7167be83432346a79e6cdf50e16b88dd",
                             "title": _searchController.text,
                             "page": Provide.value<NEWSProvide>(context).page
+                          }, (data) async {
+                            await Provide.value<NEWSProvide>(context)
+                                .setNewsList(data["showapi_res_body"]
+                                    ["pagebean"]["contentlist"]);
                           });
                         }),
                         showContentBool || _searchController.text.length > 0
@@ -205,61 +208,28 @@ class _NewsState extends State<News> {
   Future _onRefresh() async {
     await Provide.value<NEWSProvide>(context).initPage();
     await Provide.value<NEWSProvide>(context).initNewsList();
-    await _getNewsList(context, "https://route.showapi.com/109-35", {
+    await getHttp(context, "https://route.showapi.com/109-35", {
       "showapi_appid": "163797",
       "showapi_sign": "7167be83432346a79e6cdf50e16b88dd",
       "title": _searchController.text,
       "page": Provide.value<NEWSProvide>(context).page
+    }, (data) async {
+      await Provide.value<NEWSProvide>(context)
+          .setNewsList(data["showapi_res_body"]["pagebean"]["contentlist"]);
     });
   }
 
   Future _getMore() async {
     await Provide.value<NEWSProvide>(context).addPage();
-    await _getNewsList(context, "https://route.showapi.com/109-35", {
+    await getHttp(context, "https://route.showapi.com/109-35", {
       "showapi_appid": "163797",
       "showapi_sign": "7167be83432346a79e6cdf50e16b88dd",
       "title": _searchController.text,
       "page": Provide.value<NEWSProvide>(context).page
+    }, (data) async {
+      await Provide.value<NEWSProvide>(context)
+          .setNewsList(data["showapi_res_body"]["pagebean"]["contentlist"]);
     });
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      if (response.statusCode == 200) {
-        await Provide.value<NEWSProvide>(context)
-            .setVal(response.data["showapi_res_body"]["channelList"]);
-        return "完成加载";
-      } else {
-        throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
-      }
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
-  }
-
-  Future _getNewsList(BuildContext context, String url, Map formData) async {
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      if (response.statusCode == 200) {
-        print(response.data);
-        await Provide.value<NEWSProvide>(context).setNewsList(
-            response.data["showapi_res_body"]["pagebean"]["contentlist"]);
-        return "完成加载";
-      } else {
-        throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
-      }
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
   }
 }
 //新闻

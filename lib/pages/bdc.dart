@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,9 +38,12 @@ class BDC extends StatelessWidget {
               style: myTextStyle(38, 0xffffffff, false),
             )),
         body: FutureBuilder(
-            future: _getHttp(context, arguments["url"], {
+            future: getHttp(context, arguments["url"], {
               "showapi_appid": "175397",
               "showapi_sign": "8b1d37c0b5a0423ea258a1b2450ebf8d",
+            }, (data) async {
+              await Provide.value<BDCProvide>(context)
+                  .setVal(data["showapi_res_body"]["typeList"]);
             }),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -144,25 +144,5 @@ class BDC extends StatelessWidget {
                 return getAnaimation();
               }
             }));
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      if (response.statusCode == 200) {
-        // print(response.data["showapi_res_body"]["typeList"]);
-        await Provide.value<BDCProvide>(context)
-            .setVal(response.data["showapi_res_body"]["typeList"]);
-        return "完成加载";
-      } else {
-        throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
-      }
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
   }
 }

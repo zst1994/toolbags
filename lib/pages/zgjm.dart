@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
@@ -29,12 +26,7 @@ class _ZGJMState extends State<ZGJM> {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         Provide.value<ZGJMProvide>(context).addPage();
-        _getHttp(context, widget.arguments["url"], {
-          "showapi_appid": "163969",
-          "showapi_sign": "75eb02a80a8e41c0b746bac893fc8a3f",
-          "keyWords": _searchController.text,
-          "page": Provide.value<ZGJMProvide>(context).page
-        });
+        _getMore();
       }
     });
   }
@@ -65,11 +57,19 @@ class _ZGJMState extends State<ZGJM> {
             children: <Widget>[
               searchTitle(context, _searchController, "请输入解梦关键词搜索", () {
                 Provide.value<ZGJMProvide>(context).initDataList();
-                _getHttp(context, widget.arguments["url"], {
+                getHttp(context, widget.arguments["url"], {
                   "showapi_appid": "163969",
                   "showapi_sign": "75eb02a80a8e41c0b746bac893fc8a3f",
                   "keyWords": _searchController.text,
                   "page": Provide.value<ZGJMProvide>(context).page
+                }, (data) async {
+                  if (data["showapi_res_body"]["contentlist"].length > 0) {
+                    print(data["showapi_res_body"]["contentlist"]);
+                    await Provide.value<ZGJMProvide>(context)
+                        .setVal(data["showapi_res_body"]["contentlist"]);
+                  } else {
+                    shortToast("没数据了......");
+                  }
                 });
               }),
               _zgjmContent()
@@ -137,35 +137,36 @@ class _ZGJMState extends State<ZGJM> {
   Future _onRefresh() async {
     await Provide.value<ZGJMProvide>(context).initPage();
     print(Provide.value<ZGJMProvide>(context).page);
-    await _getHttp(context, widget.arguments["url"], {
+    await getHttp(context, widget.arguments["url"], {
       "showapi_appid": "163969",
       "showapi_sign": "75eb02a80a8e41c0b746bac893fc8a3f",
       "keyWords": _searchController.text,
       "page": Provide.value<ZGJMProvide>(context).page
+    }, (data) async {
+      if (data["showapi_res_body"]["contentlist"].length > 0) {
+        print(data["showapi_res_body"]["contentlist"]);
+        await Provide.value<ZGJMProvide>(context)
+            .setVal(data["showapi_res_body"]["contentlist"]);
+      } else {
+        shortToast("没数据了......");
+      }
     });
   }
 
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      if (response.statusCode == 200) {
-        if (response.data["showapi_res_body"]["contentlist"].length > 0) {
-          print(response.data["showapi_res_body"]["contentlist"]);
-          await Provide.value<ZGJMProvide>(context)
-              .setVal(response.data["showapi_res_body"]["contentlist"]);
-        } else {
-          shortToast("没数据了......");
-        }
-        return "完成加载";
+  Future _getMore() async {
+    getHttp(context, widget.arguments["url"], {
+      "showapi_appid": "163969",
+      "showapi_sign": "75eb02a80a8e41c0b746bac893fc8a3f",
+      "keyWords": _searchController.text,
+      "page": Provide.value<ZGJMProvide>(context).page
+    }, (data) async {
+      if (data["showapi_res_body"]["contentlist"].length > 0) {
+        print(data["showapi_res_body"]["contentlist"]);
+        await Provide.value<ZGJMProvide>(context)
+            .setVal(data["showapi_res_body"]["contentlist"]);
       } else {
-        throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
+        shortToast("没数据了......");
       }
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
+    });
   }
 }

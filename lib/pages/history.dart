@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
@@ -33,10 +30,13 @@ class HISTORY extends StatelessWidget {
               style: myTextStyle(38, 0xffffffff, false),
             )),
         body: FutureBuilder(
-            future: _getHttp(context, arguments["url"], {
+            future: getHttp(context, arguments["url"], {
               "showapi_appid": "164354",
               "showapi_sign": "71cfda0a91e44e70aac5de5f1951e496",
               "date": ""
+            }, (data) async {
+              await Provide.value<HistoryProvide>(context)
+                  .setVal(data["showapi_res_body"]["list"]);
             }),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -45,10 +45,14 @@ class HISTORY extends StatelessWidget {
                   children: <Widget>[
                     searchTitle(
                         context, _searchController, "请输入时间查询：0101(月份日期)", () {
-                      _getHttp(context, arguments["url"], {
+                      Provide.value<HistoryProvide>(context).setVal([]);
+                      getHttp(context, arguments["url"], {
                         "showapi_appid": "164354",
                         "showapi_sign": "71cfda0a91e44e70aac5de5f1951e496",
                         "date": _searchController.text
+                      }, (data) async {
+                        await Provide.value<HistoryProvide>(context)
+                            .setVal(data["showapi_res_body"]["list"]);
                       });
                     }),
                     _historyContent()
@@ -112,26 +116,5 @@ class HISTORY extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    await Provide.value<HistoryProvide>(context).setVal([]);
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      if (response.statusCode == 200) {
-        print(response.data);
-        await Provide.value<HistoryProvide>(context)
-            .setVal(response.data["showapi_res_body"]["list"]);
-        return "完成加载";
-      } else {
-        throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
-      }
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
   }
 }

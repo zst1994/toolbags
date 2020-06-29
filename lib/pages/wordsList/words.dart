@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:audioplayers/audioplayers.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
@@ -44,11 +41,14 @@ class _WordsPageState extends State<WordsPage> {
       appBar: AppBar(
           elevation: 0.0,
           leading: IconButton(
-              icon: Image.asset(
-                'images/fanhui_01@2x.png',
-                width: 18.w,
-              ),
-              onPressed: () => Navigator.pop(context,),),
+            icon: Image.asset(
+              'images/fanhui_01@2x.png',
+              width: 18.w,
+            ),
+            onPressed: () => Navigator.pop(
+              context,
+            ),
+          ),
           centerTitle: true,
           backgroundColor: Color(0xff09abf7),
           title: Text(
@@ -56,11 +56,18 @@ class _WordsPageState extends State<WordsPage> {
             style: myTextStyle(38, 0xffffffff, false),
           )),
       body: FutureBuilder(
-          future: _getHttp(context, "https://route.showapi.com/8-10", {
+          future: getHttp(context, "https://route.showapi.com/8-10", {
             "showapi_appid": "175397",
             "showapi_sign": "8b1d37c0b5a0423ea258a1b2450ebf8d",
             "class_id": widget.arguments["class_id"],
             "course": Provide.value<BDCProvide>(context).course
+          }, (data) async {
+            if (data["showapi_res_body"]["list"].length > 0) {
+              await Provide.value<BDCProvide>(context)
+                  .setWordsList(data["showapi_res_body"]["list"]);
+            } else {
+              shortToast("没有数据了......");
+            }
           }),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -135,44 +142,35 @@ class _WordsPageState extends State<WordsPage> {
   Future _onRefresh() async {
     await Provide.value<BDCProvide>(context).initCourse();
     // print(Provide.value<BDCProvide>(context).page);
-    await _getHttp(context, "https://route.showapi.com/8-10", {
+    await getHttp(context, "https://route.showapi.com/8-10", {
       "showapi_appid": "175397",
       "showapi_sign": "8b1d37c0b5a0423ea258a1b2450ebf8d",
       "class_id": widget.arguments["class_id"],
       "course": Provide.value<BDCProvide>(context).course
+    }, (data) async {
+      if (data["showapi_res_body"]["list"].length > 0) {
+        await Provide.value<BDCProvide>(context)
+            .setWordsList(data["showapi_res_body"]["list"]);
+      } else {
+        shortToast("没有数据了......");
+      }
     });
   }
 
   Future _getMore() async {
     await Provide.value<BDCProvide>(context).addCourse();
-    await _getHttp(context, "https://route.showapi.com/8-10", {
+    await getHttp(context, "https://route.showapi.com/8-10", {
       "showapi_appid": "175397",
       "showapi_sign": "8b1d37c0b5a0423ea258a1b2450ebf8d",
       "class_id": widget.arguments["class_id"],
       "course": Provide.value<BDCProvide>(context).course
-    });
-  }
-
-  Future _getHttp(BuildContext context, String url, Map formData) async {
-    try {
-      Response response;
-      Dio dio = new Dio();
-      dio.options.contentType =
-          ContentType.parse("application/x-www-form-urlencoded").toString();
-      response = await dio.post(url, data: formData);
-      if (response.statusCode == 200) {
-        if (response.data["showapi_res_body"]["list"].length > 0) {
-          await Provide.value<BDCProvide>(context)
-              .setWordsList(response.data["showapi_res_body"]["list"]);
-        } else {
-          shortToast("没有数据了......");
-        }
-        return "完成加载";
+    }, (data) async {
+      if (data["showapi_res_body"]["list"].length > 0) {
+        await Provide.value<BDCProvide>(context)
+            .setWordsList(data["showapi_res_body"]["list"]);
       } else {
-        throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
+        shortToast("没有数据了......");
       }
-    } catch (e) {
-      shortToast("接口异常,请明天再尝试！");
-    }
+    });
   }
 }
