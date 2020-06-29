@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
+        body: ListView(
       children: <Widget>[
         // 轮播图
         Container(
@@ -92,18 +92,19 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
-        SizedBox(
-          height: 20.h,
-        ),
         // 工具功能选择
-        Expanded(
-            child: Container(
-          color: Colors.white,
+        Container(
+          margin:
+              EdgeInsets.only(left: 40.w, right: 40.w, bottom: 30.w, top: 30.w),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(20.w)),
           child: GridView.count(
-              childAspectRatio: 0.8,
-              crossAxisCount: 4,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              childAspectRatio: 1.0,
+              crossAxisCount: 3,
               children: _buildType(context)),
-        )),
+        ),
       ],
     ));
   }
