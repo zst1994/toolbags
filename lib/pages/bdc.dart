@@ -13,6 +13,8 @@ class BDC extends StatelessWidget {
   Map arguments;
   BDC({this.arguments});
   final TextEditingController _searchController = TextEditingController();
+  FixedExtentScrollController cuperScrollController =
+      FixedExtentScrollController();
   List bdcDataList;
   int checkIndex;
 
@@ -50,7 +52,6 @@ class BDC extends StatelessWidget {
                   checkIndex = Provide.value<BDCProvide>(context).index;
                   _searchController.text = bdcDataList[checkIndex]["child_list"]
                       [Provide.value<BDCProvide>(context).subIndex]["title"];
-                  print('checkIndex========$checkIndex');
                   return Stack(children: <Widget>[
                     Align(
                         alignment: Alignment.topCenter,
@@ -58,11 +59,15 @@ class BDC extends StatelessWidget {
                           children: <Widget>[
                             searchTitle(context, _searchController, "请选择类型",
                                 () {
-                              Navigator.pushNamed(context, '/words',
-                                  arguments: bdcDataList[checkIndex]
-                                          ["child_list"][
-                                      Provide.value<BDCProvide>(context)
-                                          .subIndex]);
+                              Navigator.pushNamed<dynamic>(context, "/words",
+                                      arguments: bdcDataList[checkIndex]
+                                              ["child_list"][
+                                          Provide.value<BDCProvide>(context)
+                                              .subIndex])
+                                  .then((dynamic value) {
+                                //处理代码
+                                cuperScrollController.jumpTo(0.0);
+                              });
                             })
                           ],
                         )),
@@ -75,6 +80,7 @@ class BDC extends StatelessWidget {
                               child: Container(
                                 height: 400.h,
                                 child: CupertinoPicker(
+                                  scrollController: cuperScrollController,
                                   diameterRatio: 1.5,
                                   offAxisFraction: 0.2, //轴偏离系数
                                   magnification: 1.2, //当前选中item放大倍数
@@ -101,6 +107,7 @@ class BDC extends StatelessWidget {
                               child: Container(
                                 height: 400.h,
                                 child: CupertinoPicker(
+                                  scrollController: cuperScrollController,
                                   diameterRatio: 1.5,
                                   offAxisFraction: 0.2, //轴偏离系数
                                   magnification: 1.2, //当前选中item放大倍数
