@@ -22,7 +22,7 @@ class PersonalPage extends StatelessWidget {
               ),
               onPressed: () => Navigator.pop(context)),
           centerTitle: true,
-          backgroundColor: Color(0xff09abf7),
+          backgroundColor: Theme.of(context).accentColor,
           title: Text(
             "个人资料",
             style: myTextStyle(38, 0xffffffff, false),

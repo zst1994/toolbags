@@ -21,7 +21,7 @@ class _HomePagesState extends State<HomePages> with InitWidgetConfig {
       backgroundColor: Color(0xffF3F3F3),
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Color(0xff09abf7),
+        backgroundColor: Theme.of(context).accentColor,
         centerTitle: true,
         title: Text(
           '哆啦A梦工具袋',

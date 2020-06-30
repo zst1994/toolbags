@@ -24,7 +24,7 @@ class LoginPage extends StatelessWidget {
               ),
               onPressed: () => Navigator.pop(context)),
           centerTitle: true,
-          backgroundColor: Color(0xff09abf7),
+          backgroundColor: Theme.of(context).accentColor,
           title: Text(
             "登录",
             style: myTextStyle(38, 0xffffffff, false),

@@ -61,6 +61,7 @@ List<Widget> _buildType(BuildContext context) {
 class _MyHomePageState extends State<MyHomePage> {
   bool showBigImg = false;
   String imgUrl;
+  int checkIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -91,10 +92,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Swiper(
                         onTap: (val) {
                           setState(() {
+                            checkIndex = val;
                             showBigImg = true;
                             imgUrl = imgList[val]["imgUrl"];
                           });
                         },
+                        index: checkIndex,
                         itemBuilder: (BuildContext context, int index) {
                           return Image.asset(
                             imgList[index]["imgUrl"],

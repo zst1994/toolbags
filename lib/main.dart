@@ -99,7 +99,7 @@ class _MyAppState extends State<MyApp> {
         primaryColor: Color(0xffffffff),
         primaryColorDark: Color(0xffffffff),
         primaryColorLight: Color(0xffB3E5FC),
-        accentColor: Color(0xff8BC34A),
+        accentColor: Color(0xff09abf7),
         dividerColor: Color(0xffBDBDBD),
         dialogBackgroundColor: Color.fromARGB(80, 255, 255, 255),
         primarySwatch: Colors.lightBlue,

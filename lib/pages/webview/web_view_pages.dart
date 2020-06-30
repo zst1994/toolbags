@@ -20,7 +20,7 @@ class WebViewPage extends StatelessWidget {
                 ),
                 onPressed: () => Navigator.pop(context, {"result": true})),
             centerTitle: true,
-            backgroundColor: Color(0xff09abf7),
+            backgroundColor: Theme.of(context).accentColor,
             title: Text(
               arguments["title"],
               style: myTextStyle(38, 0xffffffff, false),

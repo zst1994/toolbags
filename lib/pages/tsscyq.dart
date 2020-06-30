@@ -56,7 +56,7 @@ class _TSSCState extends State<TSSC> {
                 ),
                 onPressed: () => Navigator.pop(context)),
             centerTitle: true,
-            backgroundColor: Color(0xff09abf7),
+            backgroundColor: Theme.of(context).accentColor,
             title: Text(
               widget.arguments["title"],
               style: myTextStyle(38, 0xffffffff, false),
