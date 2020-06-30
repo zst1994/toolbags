@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toolbag/config/common.dart';
 import 'package:toolbag/provide/more.dart';
 
@@ -10,6 +11,8 @@ class MorePages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _show(context);
+
     return Provide<MoreProvide>(builder: (context, child, val) {
       moreDataList = Provide.value<MoreProvide>(context).dataList;
 
@@ -163,6 +166,7 @@ class MorePages extends StatelessWidget {
                 margin: EdgeInsets.only(top: 6.w, bottom: 6.w),
                 child: FlatButton(
                   onPressed: () {
+                    _clear();
                     Provide.value<MoreProvide>(context)
                         .setVal({"user": "请先登录", "login": false});
                     Navigator.of(context).pop();
@@ -176,5 +180,20 @@ class MorePages extends StatelessWidget {
             ],
           );
         });
+  }
+
+  void _show(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('login') != null) {
+      Provide.value<MoreProvide>(context).setVal(
+          {"user": prefs.getString('user'), "login": prefs.getBool('login')});
+    }
+  }
+
+  void _clear() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //prefs.clear(); //全部清空
+    prefs.remove('user'); //删除key键
+    prefs.remove('login'); //删除key键
   }
 }

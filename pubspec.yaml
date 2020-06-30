@@ -33,6 +33,7 @@ dependencies:
   webview_flutter: ^0.3.22+1
   audioplayers: ^0.15.1
   provide: ^1.0.2
+  shared_preferences: ^0.5.7+3
   flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'

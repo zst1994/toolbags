@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:toolbag/config/common.dart';
 import 'package:toolbag/provide/more.dart';
@@ -85,8 +86,10 @@ class LoginPage extends StatelessWidget {
                     } else {
                       print(_userController.text);
                       print(_passController.text);
-                      Provide.value<MoreProvide>(context).setVal(
+                      _add(context,
                           {"user": _userController.text, "login": true});
+                      // Provide.value<MoreProvide>(context).setVal(
+                      //     {"user": _userController.text, "login": true});
                       Navigator.pop(context);
                     }
                   }
@@ -109,5 +112,20 @@ class LoginPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _add(BuildContext context, Map data) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('user', data["user"]);
+    prefs.setBool('login', data["login"]);
+    _show(context);
+  }
+
+  void _show(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('login') != null) {
+      Provide.value<MoreProvide>(context).setVal(
+          {"user": prefs.getString('user'), "login": prefs.getBool('login')});
+    }
   }
 }
