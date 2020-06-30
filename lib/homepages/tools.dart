@@ -27,20 +27,23 @@ List<Widget> _buildType(BuildContext context) {
     return FlatButton(
       padding: EdgeInsets.all(0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Center(
-            child: Image.asset(
-              value["src"],
-              width: 80.w,
+          Container(
+            padding: EdgeInsets.only(top: 50.w),
+            child: Center(
+              child: Image.asset(
+                value["src"],
+                width: 80.w,
+              ),
             ),
           ),
-          SizedBox(
-            height: 10.h,
-          ),
-          Text(
-            value["text"],
-            style: myTextStyle(26, 0xff333333, false),
+          Container(
+            padding: EdgeInsets.only(bottom: 40.w),
+            child: Text(
+              value["text"],
+              style: myTextStyle(26, 0xff333333, false),
+            ),
           )
         ],
       ),

@@ -82,7 +82,7 @@ class LoginPage extends StatelessWidget {
                     shortToast("账号错误");
                   } else {
                     if (_passController.text != "123123") {
-                      shortToast("账号错误");
+                      shortToast("密码错误");
                     } else {
                       print(_userController.text);
                       print(_passController.text);
