@@ -47,10 +47,16 @@ List<Widget> _buildType(BuildContext context) {
       onPressed: () {
         // gotoFlutterPage("buttonPage",
         //     {"id": value["id"], "title": value["text"], "url": value["url"]});
-        Navigator.pushNamed(context, '/buttonPage', arguments: {
-          "id": value["id"],
-          "title": value["text"],
-          "url": value["url"]
+        getSharedPreferences(context).then((e) {
+          if (e) {
+            Navigator.pushNamed(context, '/buttonPage', arguments: {
+              "id": value["id"],
+              "title": value["text"],
+              "url": value["url"]
+            });
+          } else {
+            Navigator.pushNamed(context, '/login');
+          }
         });
       },
     );

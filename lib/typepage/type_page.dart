@@ -18,7 +18,7 @@ import '../pages/bdc.dart';
 class ButtonDemoPage extends StatelessWidget {
   Map arguments;
   ButtonDemoPage({this.arguments});
-
+  
   Widget _typeChange() {
     switch (arguments["id"]) {
       case "0":

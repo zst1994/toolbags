@@ -11,6 +11,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provide/provide.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toolbag/provide/tssc.dart';
 
 final FontWeight fwBold = Platform.isIOS ? FontWeight.bold : FontWeight.w500;
@@ -323,4 +324,12 @@ Future getHttp(
   } catch (e) {
     shortToast("接口异常,请明天再尝试！");
   }
+}
+
+Future<bool> getSharedPreferences(BuildContext context) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  if (prefs.getBool('login') == null) {
+    return false;
+  }
+  return true;
 }
