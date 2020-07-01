@@ -70,8 +70,6 @@ class _TSSCState extends State<TSSC> {
               String poetId = data["showapi_res_body"]["poetInfo"][0]["poetId"];
               String biography =
                   data["showapi_res_body"]["poetInfo"][0]["biography"];
-              print(poetId);
-              print(biography);
               Provide.value<TSSCProvide>(context).setVal(poetId, biography);
               Provide.value<TSSCProvide>(context).setList([]);
               _getTSContent();
@@ -181,6 +179,7 @@ class _TSSCState extends State<TSSC> {
                     ),
                   ),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: (item["contentlist"] as List).map((val) {
                       return Container(
                         padding: EdgeInsets.only(top: 6.w, bottom: 6.w),
