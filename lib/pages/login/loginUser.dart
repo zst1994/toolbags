@@ -84,12 +84,8 @@ class LoginPage extends StatelessWidget {
                     if (_passController.text != "123123") {
                       shortToast("密码错误");
                     } else {
-                      print(_userController.text);
-                      print(_passController.text);
                       _add(context,
                           {"user": _userController.text, "login": true});
-                      // Provide.value<MoreProvide>(context).setVal(
-                      //     {"user": _userController.text, "login": true});
                       Navigator.pop(context);
                     }
                   }

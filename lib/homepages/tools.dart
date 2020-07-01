@@ -99,11 +99,16 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: AspectRatio(
                       aspectRatio: 16 / 7,
                       child: Swiper(
-                        onTap: (val) {
+                        onTap: (int val) {
                           setState(() {
                             checkIndex = val;
                             showBigImg = true;
                             imgUrl = imgList[val]["imgUrl"];
+                          });
+                        },
+                        onIndexChanged: (int val){
+                          setState(() {
+                            checkIndex = val;
                           });
                         },
                         index: checkIndex,
