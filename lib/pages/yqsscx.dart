@@ -302,13 +302,15 @@ class YQSSCX extends StatelessWidget {
         itemBuilder: (context, index) {
           return InkWell(
               onTap: () {
-                if (_yqBottomContentList[index]["open"]) {
-                  _yqBottomContentList[index]["open"] = false;
-                } else {
-                  _yqBottomContentList[index]["open"] = true;
+                if (_yqBottomContentList[index]["cityList"].length > 0) {
+                  if (_yqBottomContentList[index]["open"]) {
+                    _yqBottomContentList[index]["open"] = false;
+                  } else {
+                    _yqBottomContentList[index]["open"] = true;
+                  }
+                  Provide.value<YQSSCXProvide>(context)
+                      .setVal(_yqBottomContentList);
                 }
-                Provide.value<YQSSCXProvide>(context)
-                    .setVal(_yqBottomContentList);
               },
               child: Column(
                 children: <Widget>[
