@@ -42,7 +42,14 @@ class SFZCX extends StatelessWidget {
                     .setVal(data["showapi_res_body"]["retData"]);
               });
             }),
-            _sfzMess()
+            _sfzMess(),
+            Container(
+              padding: EdgeInsets.only(left: 50.w, right: 50.w, top: 30.w),
+              child: Text(
+                '本接口为第三方接口，是否存在收集个人信息暂时未知，请谨慎使用!!!',
+                style: myTextStyle(26, 0xfff8180b, false),
+              ),
+            )
           ],
         ));
   }

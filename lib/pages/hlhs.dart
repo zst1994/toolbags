@@ -169,6 +169,18 @@ class HLHS extends StatelessWidget {
                           ],
                         )),
                     Align(
+                        alignment: Alignment(1, -0.65),
+                        child: Container(
+                          width: double.infinity,
+                          color: Color(0xfff3f3f3),
+                          padding: EdgeInsets.only(
+                              left: 50.w, right: 50.w, top: 30.w),
+                          child: Text(
+                            '汇率仅供参考，详细汇率请以当时银行为准!!!',
+                            style: myTextStyle(26, 0xfff8180b, false),
+                          ),
+                        )),
+                    Align(
                       alignment: Alignment(-1, 1),
                       child: Row(
                         children: <Widget>[

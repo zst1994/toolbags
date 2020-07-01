@@ -142,6 +142,18 @@ class _JDJGState extends State<JDJG> {
                           ),
                         )),
                     Align(
+                        alignment: Alignment(1, -0.7),
+                        child: Container(
+                          width: double.infinity,
+                          color: Color(0xfff3f3f3),
+                          padding: EdgeInsets.only(
+                              left: 50.w, right: 50.w, top: 30.w),
+                          child: Text(
+                            '金店价格仅供参考，具体市价请以当地金店价格为准!!!',
+                            style: myTextStyle(26, 0xfff8180b, false),
+                          ),
+                        )),
+                    Align(
                       alignment: Alignment(-1, 1),
                       child: Container(
                         height: 400.h,
