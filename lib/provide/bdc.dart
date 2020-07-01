@@ -42,6 +42,7 @@ class BDCProvide with ChangeNotifier {
 
   initWordsList(){
     wordsList = [];
+    course = 1;
     notifyListeners();
   }
 

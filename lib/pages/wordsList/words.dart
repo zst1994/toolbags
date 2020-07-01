@@ -15,15 +15,14 @@ class WordsPage extends StatefulWidget {
 
 class _WordsPageState extends State<WordsPage> {
   List wordsDataList;
-  ScrollController _scrollController;
+  ScrollController _scrollController = ScrollController();
   AudioPlayer audioPlayer;
 
   @override
   void initState() {
     super.initState();
     audioPlayer = AudioPlayer();
-    _scrollController = ScrollController();
-
+    
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
