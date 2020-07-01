@@ -84,11 +84,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: Container(
                   color: Colors.black,
-                  child: Center(
-                    child: Image.asset(
-                      imgUrl,
-                      width: 750.w,
-                    ),
+                  child: Swiper(
+                    index: checkIndex,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Image.asset(
+                        imgList[index]["imgUrl"],
+                        width: 750.w,
+                      );
+                    },
+                    itemCount: imgList.length,
+                    autoplay: false,
                   ),
                 ),
               )
@@ -106,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             imgUrl = imgList[val]["imgUrl"];
                           });
                         },
-                        onIndexChanged: (int val){
+                        onIndexChanged: (int val) {
                           setState(() {
                             checkIndex = val;
                           });
