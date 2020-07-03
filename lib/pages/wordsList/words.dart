@@ -63,7 +63,7 @@ class _WordsPageState extends State<WordsPage> {
               await Provide.value<BDCProvide>(context)
                   .setWordsList(data["showapi_res_body"]["list"]);
             } else {
-              shortToast("没有数据了......");
+              shortToast("没有数据了,客官改日再约......");
             }
           }),
           builder: (context, snapshot) {
@@ -149,7 +149,7 @@ class _WordsPageState extends State<WordsPage> {
         await Provide.value<BDCProvide>(context)
             .setWordsList(data["showapi_res_body"]["list"]);
       } else {
-        shortToast("没有数据了......");
+        shortToast("没有数据了,客官改日再约......");
       }
     });
   }
@@ -166,7 +166,7 @@ class _WordsPageState extends State<WordsPage> {
         await Provide.value<BDCProvide>(context)
             .setWordsList(data["showapi_res_body"]["list"]);
       } else {
-        shortToast("没有数据了......");
+        shortToast("没有数据了,客官改日再约......");
       }
     });
   }
