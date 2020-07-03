@@ -322,7 +322,7 @@ Future getHttp(
       throw Exception('后端接口出现异常，请检测代码和服务器情况.........');
     }
   } catch (e) {
-    shortToast("接口异常,请明天再尝试！");
+    shortToast("客官你吓到人家了，稍后再来咯！");
   }
 }
 

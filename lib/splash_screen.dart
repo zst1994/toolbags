@@ -47,7 +47,6 @@ class _SplashScreenState extends State<SplashScreen>
       opacity: _animation,
       child: Image.asset(
         imgList[Random().nextInt(imgList.length)]["imgUrl"],
-        // 'images/ZZLS.jpg',
         //图片缩放
         scale: 1.0,
         fit: BoxFit.cover,
