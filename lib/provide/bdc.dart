@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class BDCProvide with ChangeNotifier {
-  Map searchWords;
   List dataList = [];
   List wordsList = [];
   int index = 0;

@@ -59,6 +59,8 @@ class BDC extends StatelessWidget {
                           children: <Widget>[
                             searchTitle(context, _searchController, "请选择类型",
                                 () {
+                              Provide.value<BDCProvide>(context)
+                                  .initWordsList();
                               Navigator.pushNamed<dynamic>(context, "/words",
                                       arguments: bdcDataList[checkIndex]
                                               ["child_list"][

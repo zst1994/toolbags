@@ -33,8 +33,6 @@ class _WordsPageState extends State<WordsPage> {
 
   @override
   Widget build(BuildContext context) {
-    Provide.value<BDCProvide>(context).initWordsList();
-
     return Scaffold(
       backgroundColor: Color(0xfff3f3f3),
       appBar: AppBar(
