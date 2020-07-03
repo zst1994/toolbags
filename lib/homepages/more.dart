@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,7 +17,6 @@ class MorePages extends StatelessWidget {
 
     return Provide<MoreProvide>(builder: (context, child, val) {
       moreDataList = Provide.value<MoreProvide>(context).dataList;
-
       return ListView(
         children: <Widget>[
           Container(
@@ -32,10 +33,21 @@ class MorePages extends StatelessWidget {
               },
               child: Column(
                 children: <Widget>[
-                  Image.asset(
-                    'images/head_boy.png',
-                    width: 200.w,
-                  ),
+                  ClipOval(
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      child: moreDataList["headBool"]
+                          ? Image.file(
+                              File(moreDataList["path"]),
+                              width: 200.w,
+                              height: 200.w,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.asset(
+                              moreDataList["path"],
+                              width: 200.w,
+                              height: 200.w,
+                              fit: BoxFit.cover,
+                            )),
                   SizedBox(
                     height: 20.w,
                   ),
@@ -167,8 +179,12 @@ class MorePages extends StatelessWidget {
                 child: FlatButton(
                   onPressed: () {
                     _clear();
-                    Provide.value<MoreProvide>(context)
-                        .setVal({"user": "请先登录", "login": false});
+                    Provide.value<MoreProvide>(context).setVal({
+                      "user": "请先登录",
+                      "login": false,
+                      "path": "images/head_boy.png",
+                      "headBool": false
+                    });
                     Navigator.of(context).pop();
                   },
                   child: Text(
@@ -185,8 +201,12 @@ class MorePages extends StatelessWidget {
   void _show(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getBool('login') != null) {
-      Provide.value<MoreProvide>(context).setVal(
-          {"user": prefs.getString('user'), "login": prefs.getBool('login')});
+      Provide.value<MoreProvide>(context).setVal({
+        "user": prefs.getString('user'),
+        "login": prefs.getBool('login'),
+        "path": prefs.getString("path") ?? "images/head_boy.png",
+        "headBool": prefs.getBool("headBool") ?? false
+      });
     }
   }
 
@@ -195,5 +215,7 @@ class MorePages extends StatelessWidget {
     //prefs.clear(); //全部清空
     prefs.remove('user'); //删除key键
     prefs.remove('login'); //删除key键
+    prefs.remove('path'); //删除key键
+    prefs.remove('headBool'); //删除key键
   }
 }

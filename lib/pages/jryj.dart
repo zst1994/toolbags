@@ -50,7 +50,7 @@ class JRYJ extends StatelessWidget {
             Container(
               padding: EdgeInsets.only(left: 50.w, right: 50.w, top: 30.w),
               child: Text(
-                '油价仅供参考，具体市价请以当地加油站为准!!!',
+                '油价仅供参考，具体油价请以当地加油站为准!!!',
                 style: myTextStyle(26, 0xfff8180b, false),
               ),
             )

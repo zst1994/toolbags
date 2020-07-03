@@ -149,7 +149,7 @@ class _JDJGState extends State<JDJG> {
                           padding: EdgeInsets.only(
                               left: 50.w, right: 50.w, top: 30.w),
                           child: Text(
-                            '金店价格仅供参考，具体市价请以当地金店价格为准!!!',
+                            '金店价格仅供参考，具体金价请以当地金店价格为准!!!',
                             style: myTextStyle(26, 0xfff8180b, false),
                           ),
                         )),

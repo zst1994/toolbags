@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:toolbag/data/dataList.dart';
 import 'homepages/home_pages.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -43,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
     return FadeTransition(
       opacity: _animation,
       child: Image.asset(
-        'images/china_03.jpg',
+        imgList[Random().nextInt(imgList.length)]["imgUrl"],
         // 'images/ZZLS.jpg',
         //图片缩放
         scale: 1.0,

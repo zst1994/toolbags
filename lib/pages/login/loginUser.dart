@@ -114,14 +114,20 @@ class LoginPage extends StatelessWidget {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('user', data["user"]);
     prefs.setBool('login', data["login"]);
+    prefs.setString('path', "images/head_boy.png");
+    prefs.setBool('headBool', false);
     _show(context);
   }
 
   void _show(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getBool('login') != null) {
-      Provide.value<MoreProvide>(context).setVal(
-          {"user": prefs.getString('user'), "login": prefs.getBool('login')});
+      Provide.value<MoreProvide>(context).setVal({
+        "user": prefs.getString('user'),
+        "login": prefs.getBool('login'),
+        "path": prefs.getString('path'),
+        "headBool": prefs.getBool('headBool')
+      });
     }
   }
 }

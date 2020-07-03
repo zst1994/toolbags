@@ -76,25 +76,29 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: showBigImg
-            ? InkWell(
-                onTap: () {
-                  setState(() {
-                    showBigImg = false;
-                  });
-                },
-                child: Container(
-                  color: Colors.black,
-                  child: Swiper(
-                    index: checkIndex,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Image.asset(
-                        imgList[index]["imgUrl"],
-                        width: 750.w,
-                      );
-                    },
-                    itemCount: imgList.length,
-                    autoplay: false,
-                  ),
+            ? Container(
+                color: Colors.black,
+                child: Swiper(
+                  onTap: (int val) {
+                    setState(() {
+                      checkIndex = val;
+                      showBigImg = false;
+                    });
+                  },
+                  onIndexChanged: (int val) {
+                    setState(() {
+                      checkIndex = val;
+                    });
+                  },
+                  index: checkIndex,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Image.asset(
+                      imgList[index]["imgUrl"],
+                      width: 750.w,
+                    );
+                  },
+                  itemCount: imgList.length,
+                  autoplay: false,
                 ),
               )
             : ListView(

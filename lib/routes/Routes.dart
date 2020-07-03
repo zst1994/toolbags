@@ -14,7 +14,7 @@ final routes = {
   '/webview': (context, {arguments}) => WebViewPage(arguments: arguments),
   '/words': (context, {arguments}) => WordsPage(arguments: arguments),
   '/login': (context, {arguments}) => LoginPage(),
-  '/personal': (context, {arguments}) => PersonalPage()
+  '/personal': (context, {arguments}) => PersonalPage(),
 };
 
 //固定写法
